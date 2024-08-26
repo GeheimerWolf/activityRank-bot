@@ -18,17 +18,16 @@ interface PredicateConfig<I extends ComponentInteraction> {
   invalidCallback: InvalidPredicateCallback<I>;
 }
 
-export type ComponentInteraction =
-  | MessageComponentInteraction<'cached'>
-  | ModalSubmitInteraction<'cached'>;
+export type ComponentInteraction = MessageComponentInteraction<'cached'> | ModalSubmitInteraction<'cached'>;
 
 export type ComponentPredicateConfig = PredicateConfig<ComponentInteraction>;
 type ComponentPredicateCheck = PredicateCheck<ComponentInteraction>;
 
-export type ComponentCallback<
-  TInteraction extends ComponentInteraction,
-  TData,
-> = (args: { interaction: TInteraction; data: TData; drop: () => void }) => Promise<void> | void;
+export type ComponentCallback<TInteraction extends ComponentInteraction, TData> = (args: {
+  interaction: TInteraction;
+  data: TData;
+  drop: () => void;
+}) => Promise<void> | void;
 
 export abstract class ComponentInstance<I extends ComponentInteraction, D> {
   public readonly identifier: string;
@@ -45,9 +44,7 @@ export abstract class ComponentInstance<I extends ComponentInteraction, D> {
     interaction: MessageComponentInteraction | ModalSubmitInteraction,
   ): ComponentPredicateCheck;
 
-  public abstract execute(
-    interaction: MessageComponentInteraction | ModalSubmitInteraction,
-  ): Promise<void>;
+  public abstract execute(interaction: MessageComponentInteraction | ModalSubmitInteraction): Promise<void>;
 
   // drop() needs to be an arrow function because the scope of `this` is lost (and evaluates to `undefined`) in normal methods.
   public drop = () => {
@@ -70,9 +67,7 @@ export abstract class Component<I extends ComponentInteraction, D> {
    * @returns {string} a customId to use in the component.
    */
   public abstract instanceId(
-    args: D extends void
-      ? { predicate?: PredicateConfig<I> }
-      : { data: D; predicate?: PredicateConfig<I> },
+    args: D extends void ? { predicate?: PredicateConfig<I> } : { data: D; predicate?: PredicateConfig<I> },
   ): string;
 
   protected constructCustomId(instanceIdentifier: string): string {
@@ -115,10 +110,7 @@ export enum ComponentKey {
   Ignore = '__IGNORE_IF_PRESSED__',
 }
 
-class MessageComponentInstance<
-  I extends MessageComponentInteraction<'cached'>,
-  D,
-> extends ComponentInstance<I, D> {
+class MessageComponentInstance<I extends MessageComponentInteraction<'cached'>, D> extends ComponentInstance<I, D> {
   constructor(
     parent: Component<I, D>,
     data: D,
@@ -127,16 +119,12 @@ class MessageComponentInstance<
     super(parent, data);
   }
 
-  public checkPredicate(
-    interaction: MessageComponentInteraction<'cached'>,
-  ): ComponentPredicateCheck {
+  public checkPredicate(interaction: MessageComponentInteraction<'cached'>): ComponentPredicateCheck {
     if (!this.predicate) return { status: Predicate.Allow };
 
     const status = this.predicate.validate(interaction);
 
-    return status === Predicate.Allow
-      ? { status }
-      : { status, callback: this.predicate.invalidCallback };
+    return status === Predicate.Allow ? { status } : { status, callback: this.predicate.invalidCallback };
   }
 
   public async execute(interaction: I): Promise<void> {
@@ -148,10 +136,7 @@ class MessageComponentInstance<
   }
 }
 
-class ModalComponentInstance<
-  I extends ModalSubmitInteraction<'cached'>,
-  D,
-> extends ComponentInstance<I, D> {
+class ModalComponentInstance<I extends ModalSubmitInteraction<'cached'>, D> extends ComponentInstance<I, D> {
   constructor(
     parent: Component<I, D>,
     data: D,
@@ -165,9 +150,7 @@ class ModalComponentInstance<
 
     const status = this.predicate.validate(interaction);
 
-    return status === Predicate.Allow
-      ? { status }
-      : { status, callback: this.predicate.invalidCallback };
+    return status === Predicate.Allow ? { status } : { status, callback: this.predicate.invalidCallback };
   }
 
   public async execute(interaction: I): Promise<void> {
@@ -185,9 +168,7 @@ class MessageComponent<I extends MessageComponentInteraction<'cached'>, D> exten
   }
 
   public instanceId(
-    args: D extends void
-      ? { predicate?: ComponentPredicateConfig }
-      : { data: D; predicate?: ComponentPredicateConfig },
+    args: D extends void ? { predicate?: ComponentPredicateConfig } : { data: D; predicate?: ComponentPredicateConfig },
   ): string {
     const component = new MessageComponentInstance(
       this,
@@ -204,15 +185,9 @@ class ModalComponent<I extends ModalSubmitInteraction<'cached'>, D> extends Comp
   }
 
   public instanceId(
-    args: D extends void
-      ? { predicate?: ComponentPredicateConfig }
-      : { data: D; predicate?: ComponentPredicateConfig },
+    args: D extends void ? { predicate?: ComponentPredicateConfig } : { data: D; predicate?: ComponentPredicateConfig },
   ): string {
-    const component = new ModalComponentInstance(
-      this,
-      'data' in args ? args.data : undefined,
-      args?.predicate ?? null,
-    );
+    const component = new ModalComponentInstance(this, 'data' in args ? args.data : undefined, args?.predicate ?? null);
     return this.constructCustomId(component.identifier);
   }
 }
@@ -254,9 +229,7 @@ export function component<D = void>(args: {
 }): Component<MessageComponentInteraction<'cached'>, D> {
   // Type-checking is only needed for the function, not the Component class constructor;
   // therefore this coersion is safe.
-  return new MessageComponent(
-    args.callback as ComponentCallback<MessageComponentInteraction<'cached'>, D>,
-  );
+  return new MessageComponent(args.callback as ComponentCallback<MessageComponentInteraction<'cached'>, D>);
 }
 
 export function modal<D = void>(args: {

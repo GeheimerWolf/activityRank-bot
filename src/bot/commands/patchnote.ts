@@ -30,8 +30,7 @@ export default command.basic({
     } else if (version == 'latest') {
       embed = patchnotesVersionEmbed(patchnotes[0]);
     } else {
-      const matchPatchnote = (note: PatchnotesEntry): boolean =>
-        note.version === version.toLowerCase();
+      const matchPatchnote = (note: PatchnotesEntry): boolean => note.version === version.toLowerCase();
       // applicableVersions.includes(version) has already been checked above; this `find()` cannot fail
       embed = patchnotesVersionEmbed(patchnotes.find(matchPatchnote)!);
     }
@@ -45,9 +44,7 @@ export default command.basic({
       const focused = interaction.options.getFocused().replace('v', '').replace('.', '');
       const versions = [
         'latest',
-        ...patchnotes
-          .map((note) => note.version)
-          .filter((version) => version.replace('.', '').includes(focused)),
+        ...patchnotes.map((note) => note.version).filter((version) => version.replace('.', '').includes(focused)),
       ].slice(0, 25);
 
       await interaction.respond(versions.map((o) => ({ name: o, value: o })));
@@ -75,8 +72,7 @@ function patchnotesVersionEmbed(patchnote: PatchnotesEntry) {
     .setColor(0x00ae86)
     .setTitle(`**Patch ${patchnote.version} - ${patchnote.title} (${patchnote.date})**`);
 
-  for (const feature of patchnote.features)
-    embed.addFields({ name: feature.title, value: feature.description });
+  for (const feature of patchnote.features) embed.addFields({ name: feature.title, value: feature.description });
 
   for (const fix of patchnote.fixes) embed.addFields({ name: fix.title, value: fix.description });
 

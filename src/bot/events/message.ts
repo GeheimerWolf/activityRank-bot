@@ -37,8 +37,7 @@ export default event(Events.MessageCreate, async (message) => {
     message.client.logger.warn({ message }, 'Message.channel undefined');
   }
 
-  if (cachedGuild.db.textXp && acceptedChannelTypes.includes(message.channel.type))
-    await rankMessage(message);
+  if (cachedGuild.db.textXp && acceptedChannelTypes.includes(message.channel.type)) await rankMessage(message);
 });
 
 async function rankMessage(msg: Message<true>) {
@@ -78,11 +77,7 @@ async function rankMessage(msg: Message<true>) {
   // Check textmessage cooldown
   const lastMessage = cachedMember.cache.lastTextMessageDate;
   if (typeof cachedGuild.db.textMessageCooldownSeconds !== 'undefined') {
-    if (
-      lastMessage &&
-      Date.now() - lastMessage.getTime() < cachedGuild.db.textMessageCooldownSeconds * 1000
-    )
-      return;
+    if (lastMessage && Date.now() - lastMessage.getTime() < cachedGuild.db.textMessageCooldownSeconds * 1000) return;
     cachedMember.cache.lastTextMessageDate = new Date();
   }
 

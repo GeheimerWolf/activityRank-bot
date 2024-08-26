@@ -1,15 +1,8 @@
 import { type GuildModel, getGuildModel } from '../models/guild/guildModel.js';
-import {
-  getChannelMemberRanks,
-  getChannelRanks,
-  getGuildMemberRanks,
-} from 'bot/models/rankModel.js';
+import { getChannelMemberRanks, getChannelRanks, getGuildMemberRanks } from 'bot/models/rankModel.js';
 import fct, { type Pagination } from '../../util/fct.js';
 import cooldownUtil from '../util/cooldownUtil.js';
-import nameUtil, {
-  addGuildMemberNamesToRanks,
-  getGuildMemberNamesWithRanks,
-} from '../util/nameUtil.js';
+import nameUtil, { addGuildMemberNamesToRanks, getGuildMemberNamesWithRanks } from '../util/nameUtil.js';
 import {
   EmbedBuilder,
   ButtonStyle,
@@ -32,11 +25,7 @@ import { command } from 'bot/util/registry/command.js';
 import { Time } from '@sapphire/duration';
 import { assertUnreachable } from 'bot/util/typescript.js';
 import { actionrow } from 'bot/util/component.js';
-import {
-  component,
-  ComponentKey,
-  type ComponentPredicateConfig,
-} from 'bot/util/registry/component.js';
+import { component, ComponentKey, type ComponentPredicateConfig } from 'bot/util/registry/component.js';
 import { requireUser } from 'bot/util/predicates.js';
 
 const _prettifyTime = {
@@ -50,14 +39,7 @@ const _prettifyTime = {
 export const activeCache = new Map<string, CacheInstance>();
 
 type Window = 'members' | 'channelMembers' | 'channels';
-type OrderType =
-  | 'allScores'
-  | 'totalScore'
-  | 'textMessage'
-  | 'voiceMinute'
-  | 'invite'
-  | 'vote'
-  | 'bonus';
+type OrderType = 'allScores' | 'totalScore' | 'textMessage' | 'voiceMinute' | 'invite' | 'vote' | 'bonus';
 
 interface CacheInstance {
   window: Window;
@@ -90,9 +72,7 @@ export default command.basic({
       interaction,
     };
 
-    const { id } = await interaction.editReply(
-      await generate(initialState, interaction.guild, cachedGuild),
-    );
+    const { id } = await interaction.editReply(await generate(initialState, interaction.guild, cachedGuild));
 
     const cleanCache = async () => {
       const state = activeCache.get(id);
@@ -162,10 +142,7 @@ async function execCacheSet<T extends keyof CacheInstance>(
 ) {
   const cachedMessage = activeCache.get(interaction.message.id);
   if (!cachedMessage) {
-    interaction.client.logger.debug(
-      { interaction, id: interaction.message.id },
-      'Could not find cachedMessage',
-    );
+    interaction.client.logger.debug({ interaction, id: interaction.message.id }, 'Could not find cachedMessage');
     return;
   }
 
@@ -185,21 +162,13 @@ async function generate(
   cachedGuild: GuildModel,
   disabled = false,
 ): Promise<InteractionEditReplyOptions> {
-  if (state.window === 'channelMembers')
-    return await generateChannelMembers(state, guild, cachedGuild, disabled);
-  else if (state.window === 'members')
-    return await generateGuildMembers(state, guild, cachedGuild, disabled);
-  else if (state.window === 'channels')
-    return await generateChannels(state, guild, cachedGuild, disabled);
+  if (state.window === 'channelMembers') return await generateChannelMembers(state, guild, cachedGuild, disabled);
+  else if (state.window === 'members') return await generateGuildMembers(state, guild, cachedGuild, disabled);
+  else if (state.window === 'channels') return await generateChannels(state, guild, cachedGuild, disabled);
   else assertUnreachable(state.window);
 }
 
-async function generateChannels(
-  state: CacheInstance,
-  guild: Guild,
-  cachedGuild: GuildModel,
-  disabled: boolean,
-) {
+async function generateChannels(state: CacheInstance, guild: Guild, cachedGuild: GuildModel, disabled: boolean) {
   const page = fct.extractPageSimple(state.page ?? 1, cachedGuild.db.entriesPerPage);
 
   const title = `Toplist channels in ${guild.name} | ${_prettifyTime[state.time]}`;
@@ -237,9 +206,7 @@ async function getTopChannels(
     nameUtil.getChannelMention(guild.channels.cache, channelRanks[index].channelId);
   const emoji = type === 'voiceMinute' ? ':microphone2:' : ':writing_hand:';
   const channelValue = (index: number) =>
-    type === 'voiceMinute'
-      ? Math.round((channelRanks[index][time] / 60) * 10) / 10
-      : channelRanks[index][time];
+    type === 'voiceMinute' ? Math.round((channelRanks[index][time] / 60) * 10) / 10 : channelRanks[index][time];
 
   const s = [];
   for (let i = 0; i < channelRanks.length; i++)
@@ -248,12 +215,7 @@ async function getTopChannels(
   return s.join('\n');
 }
 
-async function generateChannelMembers(
-  state: CacheInstance,
-  guild: Guild,
-  cachedGuild: GuildModel,
-  disabled: boolean,
-) {
+async function generateChannelMembers(state: CacheInstance, guild: Guild, cachedGuild: GuildModel, disabled: boolean) {
   if (!state.channel) {
     return {
       embeds: [
@@ -273,14 +235,7 @@ async function generateChannelMembers(
 
   const title = `Toplist for channel ${state.channel.name} | ${_prettifyTime[state.time]}`;
 
-  const channelMemberRanks = await getChannelMemberRanks(
-    guild,
-    state.channel.id,
-    type,
-    state.time,
-    page.from,
-    page.to,
-  );
+  const channelMemberRanks = await getChannelMemberRanks(guild, state.channel.id, type, state.time, page.from, page.to);
 
   if (!channelMemberRanks || channelMemberRanks.length === 0) {
     return {
@@ -305,8 +260,7 @@ async function generateChannelMembers(
         ? `:microphone2: ${Math.round((channelMemberRanks[i][state.time] / 60) * 10) / 10}`
         : `:writing_hand: ${channelMemberRanks[i][state.time]}`;
 
-    const guildMemberName = (await nameUtil.getGuildMemberInfo(guild, channelMemberRanks[i].userId))
-      .name;
+    const guildMemberName = (await nameUtil.getGuildMemberInfo(guild, channelMemberRanks[i].userId)).name;
 
     embed.fields = [
       ...(embed.fields ?? []),
@@ -324,12 +278,7 @@ async function generateChannelMembers(
   };
 }
 
-async function generateGuildMembers(
-  state: CacheInstance,
-  guild: Guild,
-  cachedGuild: GuildModel,
-  disabled: boolean,
-) {
+async function generateGuildMembers(state: CacheInstance, guild: Guild, cachedGuild: GuildModel, disabled: boolean) {
   const page = fct.extractPageSimple(state.page ?? 1, cachedGuild.db.entriesPerPage);
 
   let title = `Toplist for server ${guild.name} | ${_prettifyTime[state.time]}`;
@@ -339,8 +288,7 @@ async function generateGuildMembers(
   else if (state.orderType === 'invite') title += ' | By invites';
   else if (state.orderType === 'vote') title += ' | By ' + cachedGuild.db.voteTag;
   else if (state.orderType === 'bonus') title += ' | By ' + cachedGuild.db.bonusTag;
-  else if (state.orderType === 'totalScore' || state.orderType === 'allScores')
-    title += ' | By total XP';
+  else if (state.orderType === 'totalScore' || state.orderType === 'allScores') title += ' | By total XP';
 
   const memberRanks = await getGuildMemberRanks(
     guild,
@@ -373,14 +321,11 @@ async function generateGuildMembers(
 
     const getScoreString = (type: StatType) => {
       const { time } = state;
-      if (type === 'textMessage' && cachedGuild.db.textXp)
-        return `:writing_hand: ${memberRank[`textMessage${time}`]}`;
+      if (type === 'textMessage' && cachedGuild.db.textXp) return `:writing_hand: ${memberRank[`textMessage${time}`]}`;
       if (type === 'voiceMinute' && cachedGuild.db.voiceXp)
         return `:microphone2: ${Math.round((memberRank[`voiceMinute${time}`] / 60) * 10) / 10}`;
-      if (type === 'invite' && cachedGuild.db.inviteXp)
-        return `:envelope: ${memberRank[`invite${time}`]}`;
-      if (type === 'vote' && cachedGuild.db.voteXp)
-        return `${cachedGuild.db.voteEmote} ${memberRank[`vote${time}`]}`;
+      if (type === 'invite' && cachedGuild.db.inviteXp) return `:envelope: ${memberRank[`invite${time}`]}`;
+      if (type === 'vote' && cachedGuild.db.voteXp) return `${cachedGuild.db.voteEmote} ${memberRank[`vote${time}`]}`;
       if (type === 'bonus' && cachedGuild.db.bonusXp)
         return `${cachedGuild.db.bonusEmote} ${memberRank[`bonus${time}`]}`;
       return null;
@@ -403,12 +348,8 @@ async function generateGuildMembers(
     embed.fields = [
       ...(embed.fields ?? []),
       {
-        name: `**#${page.from + i} ${memberRank.name}** \\🎖${Math.floor(
-          memberRank.levelProgression,
-        )}`,
-        value: `Total: ${memberRank[`totalScore${state.time}`]} XP ${getFieldScoreString(
-          state.orderType,
-        )}`,
+        name: `**#${page.from + i} ${memberRank.name}** \\🎖${Math.floor(memberRank.levelProgression)}`,
+        value: `Total: ${memberRank[`totalScore${state.time}`]} XP ${getFieldScoreString(state.orderType)}`,
       },
     ];
     i++;
@@ -420,10 +361,7 @@ async function generateGuildMembers(
   };
 }
 
-function getGlobalComponents(
-  state: CacheInstance,
-  disabled: boolean,
-): ActionRowData<MessageActionRowComponentData>[] {
+function getGlobalComponents(state: CacheInstance, disabled: boolean): ActionRowData<MessageActionRowComponentData>[] {
   return [
     actionrow([
       {
@@ -495,10 +433,7 @@ function getPaginationComponents(
   ]);
 }
 
-function getMembersComponents(
-  state: CacheInstance,
-  disabled: boolean,
-): ActionRowData<MessageActionRowComponentData>[] {
+function getMembersComponents(state: CacheInstance, disabled: boolean): ActionRowData<MessageActionRowComponentData>[] {
   const rowOption = (label: string, value: string) => ({
     label,
     value,

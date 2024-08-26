@@ -180,10 +180,7 @@ const general: Window = {
     } else if (cachedGuild.db.notifyLevelupCurrentChannel) {
       notifyLevelupType = 'Current Channel';
     } else if (cachedGuild.db.autopost_levelup !== '0') {
-      const channelName = nameUtil.getChannelName(
-        interaction.guild.channels.cache,
-        cachedGuild.db.autopost_levelup,
-      );
+      const channelName = nameUtil.getChannelName(interaction.guild.channels.cache, cachedGuild.db.autopost_levelup);
       notifyLevelupType = `#${channelName}`;
     } else {
       notifyLevelupType = 'None';
@@ -297,9 +294,7 @@ const levels: Window = {
       fields: levels.map((level) => ({
         name: `🎖${level.number}`,
         value: levelValue(
-          level.number < 2
-            ? '*All members start at Level 1.*'
-            : `**${level.localXp}** (${level.totalXp})`,
+          level.number < 2 ? '*All members start at Level 1.*' : `**${level.localXp}** (${level.totalXp})`,
           level.number,
         ),
         inline: true,
@@ -317,11 +312,7 @@ const roles: Window = {
     // unique array of all levels where a role is either assigned or deassigned - except for "level 0"
     // (which doesn't exist and shouldn't be included, becuase it contains all the default deassigns)
     const relevantLevels = [
-      ...new Set(
-        roleAssignments
-          .flatMap((a) => [a.assignLevel, a.deassignLevel])
-          .filter((level) => level !== 0),
-      ),
+      ...new Set(roleAssignments.flatMap((a) => [a.assignLevel, a.deassignLevel]).filter((level) => level !== 0)),
     ].sort((a, b) => a - b);
 
     return {
@@ -332,12 +323,8 @@ const roles: Window = {
         .map((level) => ({
           name: `Level ${level}`,
           value: [
-            roleAssignments
-              .filter((r) => r.deassignLevel === level)
-              .map((r) => `**\-** <@&${r.roleId}>`),
-            roleAssignments
-              .filter((r) => r.assignLevel === level)
-              .map((r) => `**+** <@&${r.roleId}>`),
+            roleAssignments.filter((r) => r.deassignLevel === level).map((r) => `**\-** <@&${r.roleId}>`),
+            roleAssignments.filter((r) => r.assignLevel === level).map((r) => `**+** <@&${r.roleId}>`),
           ]
             .flat()
             .join('\n'),
@@ -376,10 +363,7 @@ const nocommandchannels: Window = {
       ...noCommandChannels
         .sort((a, b) => (a.channel ? (b.channel ? a.channel.type - b.channel.type : 0) : -1))
         .slice(page.from - 1, page.to)
-        .map(
-          (channel) =>
-            `- ${nameUtil.getChannelMention(interaction.guild.channels.cache, channel.id)}`,
-        ),
+        .map((channel) => `- ${nameUtil.getChannelMention(interaction.guild.channels.cache, channel.id)}`),
     );
 
     if (noCommandChannelIds.length > page.to)
@@ -417,14 +401,10 @@ const noxpchannels: Window = {
       ...noXpChannels
         .sort((a, b) => (a.channel ? (b.channel ? a.channel.type - b.channel.type : 0) : -1))
         .slice(page.from - 1, page.to)
-        .map(
-          (channel) =>
-            `- ${nameUtil.getChannelMention(interaction.guild.channels.cache, channel.id)}`,
-        ),
+        .map((channel) => `- ${nameUtil.getChannelMention(interaction.guild.channels.cache, channel.id)}`),
     );
 
-    if (noXpChannelIds.length > page.to)
-      description.push(`- *and ${noXpChannelIds.length - page.to} more...*`);
+    if (noXpChannelIds.length > page.to) description.push(`- *and ${noXpChannelIds.length - page.to} more...*`);
 
     return {
       author: {
@@ -441,9 +421,7 @@ const noxproles: Window = {
   additionalComponents: () => [],
   enablePagination: true,
   async embed({ interaction, page }) {
-    const description = [
-      '-# Activity from a user with any of these roles will not give them XP.\n',
-    ];
+    const description = ['-# Activity from a user with any of these roles will not give them XP.\n'];
 
     const noXpRoleIds = await guildRoleModel.getNoXpRoleIds(interaction.guild);
 
@@ -457,8 +435,7 @@ const noxproles: Window = {
         .map((roleId) => `- ${nameUtil.getRoleMention(interaction.guild.roles.cache, roleId)}`),
     );
 
-    if (noXpRoleIds.length > page.to)
-      description.push(`- *and ${noXpRoleIds.length - page.to} more...*`);
+    if (noXpRoleIds.length > page.to) description.push(`- *and ${noXpRoleIds.length - page.to} more...*`);
 
     return {
       author: {

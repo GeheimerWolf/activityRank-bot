@@ -52,12 +52,8 @@ type UpvoteAttemptResult =
  * @param target The member that is being upvoted
  * @returns Whether the upvote succeeded
  */
-export async function attemptUpvote(
-  voter: GuildMember,
-  target: GuildMember,
-): Promise<UpvoteAttemptResult> {
-  if (voter.guild.id !== target.guild.id)
-    throw new Error('Attempted to upvote members in different guilds');
+export async function attemptUpvote(voter: GuildMember, target: GuildMember): Promise<UpvoteAttemptResult> {
+  if (voter.guild.id !== target.guild.id) throw new Error('Attempted to upvote members in different guilds');
 
   const cachedGuild = await getGuildModel(voter.guild);
 
@@ -70,21 +66,14 @@ export async function attemptUpvote(
   if (await hasNoXpRole(target)) return { status: UpvoteAttempt.TargetHasNoXP };
 
   // Check Command cooldown
-  const toWait = getWaitTime(
-    cachedMember.cache.lastVoteDate,
-    cachedGuild.db.voteCooldownSeconds * 1000,
-  );
+  const toWait = getWaitTime(cachedMember.cache.lastVoteDate, cachedGuild.db.voteCooldownSeconds * 1000);
 
-  if (toWait.remaining > 0)
-    return { status: UpvoteAttempt.TimeoutNotElapsed, nextUpvote: toWait.next };
+  if (toWait.remaining > 0) return { status: UpvoteAttempt.TimeoutNotElapsed, nextUpvote: toWait.next };
 
   // TODO: [FIXME] - the upvoteCache check should not be necessary as toWait should already handle this
   const cachedNextVote = upvoteCache.get(`${voter.guild.id}.${voter.id}`);
   if (cachedNextVote && cachedNextVote.getTime() > Date.now()) {
-    voter.client.logger.warn(
-      { cachedMember, cachedGuild },
-      'vote cache caught by fallback measure',
-    );
+    voter.client.logger.warn({ cachedMember, cachedGuild }, 'vote cache caught by fallback measure');
     return { status: UpvoteAttempt.TimeoutNotElapsed, nextUpvote: cachedNextVote };
   }
 
@@ -115,18 +104,12 @@ export async function attemptUpvote(
   cachedMember.cache.lastVoteDate = new Date();
 
   await statFlushCache.addVote(target, multiplier);
-  upvoteCache.set(
-    `${voter.guild.id}.${voter.id}`,
-    new Date(Date.now() + cachedGuild.db.voteCooldownSeconds * 1000),
-  );
+  upvoteCache.set(`${voter.guild.id}.${voter.id}`, new Date(Date.now() + cachedGuild.db.voteCooldownSeconds * 1000));
 
   return { status: UpvoteAttempt.Success, multiplier };
 }
 
-export function getUpvoteMessage(
-  result: UpvoteAttemptResult,
-  target: GuildMember,
-): InteractionReplyOptions {
+export function getUpvoteMessage(result: UpvoteAttemptResult, target: GuildMember): InteractionReplyOptions {
   const { status } = result;
 
   const ephemeral = (content: string) => ({ content, ephemeral: true });
@@ -138,9 +121,7 @@ export function getUpvoteMessage(
   } else if (status === UpvoteAttempt.TargetSelf) {
     return ephemeral('You cannot upvote yourself.');
   } else if (status === UpvoteAttempt.TargetHasNoXP) {
-    return ephemeral(
-      'The member you are trying to upvote cannot be upvoted, because of an assigned noXp role.',
-    );
+    return ephemeral('The member you are trying to upvote cannot be upvoted, because of an assigned noXp role.');
   } else if (status === UpvoteAttempt.TimeoutNotElapsed) {
     const next = time(result.nextUpvote, 'R');
     return ephemeral(`You already voted recently. You will be able to vote again ${next}.`);

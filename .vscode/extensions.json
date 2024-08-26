@@ -7,8 +7,5 @@
     "ms-azuretools.vscode-docker",
     "biomejs.biome"
   ],
-  "unwantedRecommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint"
-  ]
+  "unwantedRecommendations": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"]
 }

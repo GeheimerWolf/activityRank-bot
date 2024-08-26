@@ -23,11 +23,7 @@ import { requireUser } from 'bot/util/predicates.js';
 
 type AssignType = 'assignMessage' | 'deassignMessage';
 
-const generateMainRow = (
-  interaction: Interaction<'cached'>,
-  roleId: string,
-  myRole: GuildRoleSchema,
-) => {
+const generateMainRow = (interaction: Interaction<'cached'>, roleId: string, myRole: GuildRoleSchema) => {
   const predicate = requireUser(interaction.user);
   return actionrow([
     {
@@ -79,9 +75,7 @@ const _modal = (roleId: string, type: AssignType) =>
       new ActionRowBuilder<TextInputBuilder>().addComponents(
         new TextInputBuilder()
           .setCustomId('msg-component-1')
-          .setLabel(
-            `The message to send upon ${type === 'assignMessage' ? 'assignment' : 'deassignment'}`,
-          )
+          .setLabel(`The message to send upon ${type === 'assignMessage' ? 'assignment' : 'deassignment'}`)
           .setStyle(TextInputStyle.Paragraph)
           .setMaxLength(1000)
           .setRequired(true),
@@ -109,9 +103,7 @@ export const menu = subcommand({
     ],
   },
   async execute({ interaction }) {
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)) {
       await interaction.reply({
         content: 'You need the permission to manage the server in order to use this command.',
         ephemeral: true,
@@ -147,8 +139,7 @@ export const menu = subcommand({
         },
         {
           name: 'Assign Message',
-          value:
-            'This is the message sent when this role is given to a member. Defaults to the global assignMessage.',
+          value: 'This is the message sent when this role is given to a member. Defaults to the global assignMessage.',
         },
         {
           name: 'Deassign Message',
@@ -224,10 +215,7 @@ const noXpButton = component<{ roleId: string }>({
       myRole.noXp = 1;
     }
     await interaction.update({
-      components: [
-        generateMainRow(interaction, data.roleId, myRole),
-        generateCloseRow(interaction, data.roleId),
-      ],
+      components: [generateMainRow(interaction, data.roleId, myRole), generateCloseRow(interaction, data.roleId)],
     });
 
     drop();
@@ -249,9 +237,7 @@ const messageModal = modal<{ type: AssignType; roleId: string }>({
 
     await interaction.deferReply({ ephemeral: true });
     await interaction.followUp({
-      content: `Set ${
-        type === 'assignMessage' ? 'Assignment' : 'Deassignment'
-      } Message for <@&${roleId}>`,
+      content: `Set ${type === 'assignMessage' ? 'Assignment' : 'Deassignment'} Message for <@&${roleId}>`,
       embeds: [new EmbedBuilder().setDescription(value).setColor('#4fd6c8')],
       ephemeral: true,
     });

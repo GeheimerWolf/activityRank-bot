@@ -13,8 +13,7 @@ const askForPremiumCdUser = isDev ? 3600 * 6 : 3600 * 6;
 
 export default async function (interaction: ChatInputCommandInteraction<'cached'>) {
   const cachedGuild = await getGuildModel(interaction.guild);
-  const onGuildCooldown =
-    getWaitTime(cachedGuild.cache.lastAskForPremiumDate, askForPremiumCdGuild).remaining > 0;
+  const onGuildCooldown = getWaitTime(cachedGuild.cache.lastAskForPremiumDate, askForPremiumCdGuild).remaining > 0;
 
   if (onGuildCooldown) return;
 

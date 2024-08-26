@@ -41,10 +41,7 @@ export default async (manager: ShardingManager) => {
     if (!shardNow) continue;
 
     const diff =
-      shardOld.textMessagesTotal +
-      shardOld.commandsTotal -
-      shardNow.textMessagesTotal -
-      shardNow.commandsTotal;
+      shardOld.textMessagesTotal + shardOld.commandsTotal - shardNow.textMessagesTotal - shardNow.commandsTotal;
 
     if (diff == 0) deadShardIds.push(shardOld.shardId);
   }

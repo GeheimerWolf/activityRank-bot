@@ -43,15 +43,7 @@
       "$ref": "#/$defs/dbConnection"
     }
   },
-  "required": [
-    "botAuth",
-    "botId",
-    "managerApiAuth",
-    "managerHost",
-    "managerPort",
-    "managerDb",
-    "shardDb"
-  ],
+  "required": ["botAuth", "botId", "managerApiAuth", "managerHost", "managerPort", "managerDb", "shardDb"],
   "additionalProperties": false,
   "$defs": {
     "dbConnection": {

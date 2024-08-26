@@ -37,8 +37,7 @@ export function hasFeature(
   const hash = (id >> 22n) % 100n;
   const offset = featureMap[feature].offset ?? 0n;
 
-  if (offset + featureMap[feature].percent > 100n)
-    throw new Error('Invalid feature configuration.');
+  if (offset + featureMap[feature].percent > 100n) throw new Error('Invalid feature configuration.');
   // offset < hash < offset + percent
   return hash > offset && hash < offset + featureMap[feature].percent;
 }

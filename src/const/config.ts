@@ -1,10 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import type {
-  ConfigInstance,
-  KeyInstance,
-  PrivilegeInstance,
-  PrivilegeLevel as PL,
-} from './config.types.js';
+import type { ConfigInstance, KeyInstance, PrivilegeInstance, PrivilegeLevel as PL } from './config.types.js';
 import { packageFile } from './paths.js';
 
 const LOAD_LOCAL_CONFIG = process.env.LOAD_LOCAL_CONFIG === '1';

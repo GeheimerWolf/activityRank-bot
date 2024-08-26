@@ -37,9 +37,7 @@ describe('ResetJob', () => {
     expect(job.status).toBe(ResetStatus.Ready);
     expect(job['rowEstimation']).toBe(100);
 
-    await expect(() => job.plan()).rejects.toThrowError(
-      'ResetJob.plan() called during stage 2 (expected 0)',
-    );
+    await expect(() => job.plan()).rejects.toThrowError('ResetJob.plan() called during stage 2 (expected 0)');
   });
 
   it('throws if ran too early', async () => {

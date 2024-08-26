@@ -11,9 +11,7 @@ type EventKey = keyof ClientEvents | string | symbol;
  * For Discord.JS `ClientEvents`, the parameters are properly typed according to the event;
  * for custom events, it is assumed that no parameters will be passed.
  */
-type EventParameters<E extends EventKey = EventKey> = E extends keyof ClientEvents
-  ? ClientEvents[E]
-  : [];
+type EventParameters<E extends EventKey = EventKey> = E extends keyof ClientEvents ? ClientEvents[E] : [];
 
 /**
  * Builds an event handler with optional one-time execution.

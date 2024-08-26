@@ -1,10 +1,6 @@
 import shardDb, { getShardDb } from '../../../models/shardDb/shardDb.js';
 import type { Guild, GuildMember } from 'discord.js';
-import type {
-  GuildMember as DBMember,
-  GuildMemberSchema,
-  GuildMemberUpdate,
-} from 'models/types/kysely/shard.js';
+import type { GuildMember as DBMember, GuildMemberSchema, GuildMemberUpdate } from 'models/types/kysely/shard.js';
 import { getGuildModel } from './guildModel.js';
 import { getGuildMemberTotalScore } from '../rankModel.js';
 import { CachedModel } from '../generic/model.js';
@@ -107,12 +103,7 @@ export async function getRankedUserIds(guild: Guild) {
 
   for (const type of xpTypes) {
     idQuery = idQuery.union(
-      db
-        .selectFrom(type)
-        .distinct()
-        .select('userId')
-        .where('guildId', '=', guild.id)
-        .where('alltime', '!=', 0),
+      db.selectFrom(type).distinct().select('userId').where('guildId', '=', guild.id).where('alltime', '!=', 0),
     );
   }
 

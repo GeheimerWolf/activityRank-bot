@@ -2,12 +2,7 @@ import { hasPrivilege, privileges } from 'const/config.js';
 import type { PrivilegeLevel } from 'const/config.types.js';
 import type { CommandPredicateConfig } from './registry/command.js';
 import { Predicate } from './registry/predicate.js';
-import type {
-  ChatInputCommandInteraction,
-  ContextMenuCommandInteraction,
-  GuildMember,
-  User,
-} from 'discord.js';
+import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, GuildMember, User } from 'discord.js';
 import type { ComponentPredicateConfig } from './registry/component.js';
 
 function userHasPrivilege(user: User, privilege: PrivilegeLevel): Predicate {
@@ -15,13 +10,8 @@ function userHasPrivilege(user: User, privilege: PrivilegeLevel): Predicate {
   return hasPrivilege(privilege, userPrivileges) ? Predicate.Allow : Predicate.Deny;
 }
 
-async function INVALID_CALLBACK(
-  interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
-) {
-  interaction.client.logger.warn(
-    { interaction },
-    'Unauthorised attempt to access privileged command',
-  );
+async function INVALID_CALLBACK(interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction) {
+  interaction.client.logger.warn({ interaction }, 'Unauthorised attempt to access privileged command');
   await interaction.reply({
     content: `Sorry! This command is only accessible to ActivityRank staff. [This incident will be reported.](https://xkcd.com/838)`,
   });

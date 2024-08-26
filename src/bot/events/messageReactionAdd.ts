@@ -61,10 +61,7 @@ export default event(Events.MessageReactionAdd, async (reaction, user) => {
   const myUser = await userModel.fetch();
   const value = fct.getVoteMultiplier(myUser);
 
-  const toWait = getWaitTime(
-    cachedMember.cache.lastVoteDate,
-    cachedGuild.db.voteCooldownSeconds * 1000,
-  );
+  const toWait = getWaitTime(cachedMember.cache.lastVoteDate, cachedGuild.db.voteCooldownSeconds * 1000);
 
   if (toWait.remaining > 0) return;
 

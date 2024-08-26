@@ -3,9 +3,7 @@ import logger from '../util/logger.js';
 import type { ShardingManager } from 'discord.js';
 
 export default async (manager: ShardingManager) => {
-  const res = await managerDb.query<{ shardId: number }[]>(
-    `SELECT shardId from botShardStat WHERE restartQueued = 1`,
-  );
+  const res = await managerDb.query<{ shardId: number }[]>(`SELECT shardId from botShardStat WHERE restartQueued = 1`);
 
   const shardIdsToRestart: number[] = [];
   for (const row of res) {
@@ -13,11 +11,7 @@ export default async (manager: ShardingManager) => {
     if (shard) shardIdsToRestart.push(row.shardId);
   }
 
-  logger.debug(
-    `Shards queued for restart: ${
-      shardIdsToRestart.length === 0 ? 'None' : shardIdsToRestart.join(',')
-    }`,
-  );
+  logger.debug(`Shards queued for restart: ${shardIdsToRestart.length === 0 ? 'None' : shardIdsToRestart.join(',')}`);
 
   if (shardIdsToRestart.length > 0)
     await managerDb.query(`UPDATE botShardStat SET restartQueued = 0 

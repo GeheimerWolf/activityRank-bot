@@ -17,12 +17,7 @@ interface UserCacheStorage {
 
 export const userCache = new WeakMap<User, UserModel>();
 
-export class UserModel extends CachedModel<
-  User,
-  UserSchema,
-  typeof cachedFields,
-  UserCacheStorage
-> {
+export class UserModel extends CachedModel<User, UserSchema, typeof cachedFields, UserCacheStorage> {
   async fetchOptional() {
     const user = await this.handle
       .selectFrom('user')
@@ -49,11 +44,7 @@ export class UserModel extends CachedModel<
     let res = await db.selectFrom('user').selectAll().where('userId', '=', '0').executeTakeFirst();
 
     if (!res) {
-      res = await db
-        .insertInto('user')
-        .values({ userId: '0' })
-        .returningAll()
-        .executeTakeFirstOrThrow();
+      res = await db.insertInto('user').values({ userId: '0' }).returningAll().executeTakeFirstOrThrow();
     }
 
     defaultAll = res;
@@ -87,11 +78,7 @@ async function buildCache(user: User): Promise<UserModel> {
   const host = await getDbHost(user.id);
   const db = getShardDb(host);
 
-  const foundCache = await db
-    .selectFrom('user')
-    .select(cachedFields)
-    .where('userId', '=', user.id)
-    .executeTakeFirst();
+  const foundCache = await db.selectFrom('user').select(cachedFields).where('userId', '=', user.id).executeTakeFirst();
   const cache = foundCache ?? { ...(await loadDefaultCache(host)) };
 
   const built = new UserModel(user, host, cache, {});
@@ -126,11 +113,7 @@ async function loadDefaultCache(host: string) {
   if (defaultCache) return defaultCache;
   const db = getShardDb(host);
 
-  let res = await db
-    .selectFrom('user')
-    .select(cachedFields)
-    .where('userId', '=', '0')
-    .executeTakeFirst();
+  let res = await db.selectFrom('user').select(cachedFields).where('userId', '=', '0').executeTakeFirst();
 
   if (!res) {
     await db
@@ -138,11 +121,7 @@ async function loadDefaultCache(host: string) {
       .values({ userId: '0' })
       // .returning(cachedFields) RETURNING is not supported well in MySQL
       .executeTakeFirstOrThrow();
-    res = await db
-      .selectFrom('user')
-      .select(cachedFields)
-      .where('userId', '=', '0')
-      .executeTakeFirstOrThrow();
+    res = await db.selectFrom('user').select(cachedFields).where('userId', '=', '0').executeTakeFirstOrThrow();
   }
 
   defaultCache = res;

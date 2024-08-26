@@ -92,12 +92,8 @@ describe('emojiToString', () => {
   it('should properly convert Emojis to serialized strings', () => {
     expect(emojiToString({ custom: false, emoji: '\u2764' })).toBe('\u2764');
     expect(emojiToString({ custom: false, emoji: '\u2764\uFE0F' })).toBe('\u2764\uFE0F');
-    expect(emojiToString({ custom: true, id: '1234', name: 'emoji', animated: false })).toBe(
-      '<:emoji:1234>',
-    );
-    expect(emojiToString({ custom: true, id: '1234', name: 'emoji', animated: true })).toBe(
-      '<a:emoji:1234>',
-    );
+    expect(emojiToString({ custom: true, id: '1234', name: 'emoji', animated: false })).toBe('<:emoji:1234>');
+    expect(emojiToString({ custom: true, id: '1234', name: 'emoji', animated: true })).toBe('<a:emoji:1234>');
   });
 });
 
@@ -105,11 +101,7 @@ describe('parseEmojiString', () => {
   it('should properly convert Emojis to serialized strings', () => {
     expect(parseEmojiString('\u2764')).toBe('\u2764');
     expect(parseEmojiString('\u2764\uFE0F')).toBe('\u2764\uFE0F');
-    expect(parseEmojiString('<:ThanksTeam:775119755618025512>')).toBe(
-      '<:ThanksTeam:775119755618025512>',
-    );
-    expect(parseEmojiString('<a:ThanksTeam:775119755618025512>')).toBe(
-      '<a:ThanksTeam:775119755618025512>',
-    );
+    expect(parseEmojiString('<:ThanksTeam:775119755618025512>')).toBe('<:ThanksTeam:775119755618025512>');
+    expect(parseEmojiString('<a:ThanksTeam:775119755618025512>')).toBe('<a:ThanksTeam:775119755618025512>');
   });
 });

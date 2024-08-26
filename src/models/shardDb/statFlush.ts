@@ -1,26 +1,16 @@
 import shardDb from './shardDb.js';
 import logger from '../../util/logger.js';
 import type { ShardingManager } from 'discord.js';
-import type {
-  StatFlushCache,
-  StatFlushCacheChannelEntry,
-  StatFlushCacheGuildEntry,
-} from 'bot/statFlushCache.js';
+import type { StatFlushCache, StatFlushCacheChannelEntry, StatFlushCacheGuildEntry } from 'bot/statFlushCache.js';
 import type { StatType } from 'models/types/enums.js';
 import { inspect } from 'node:util';
 import type { XpFlushCache } from 'bot/xpFlushCache.js';
 
 export default async function (manager: ShardingManager) {
-  const shardCaches = (await manager.fetchClientValues('statFlushCache')) as Record<
-    string,
-    StatFlushCache
-  >[];
+  const shardCaches = (await manager.fetchClientValues('statFlushCache')) as Record<string, StatFlushCache>[];
   manager.broadcastEval((client) => (client.statFlushCache = {}));
 
-  const xpCaches = (await manager.fetchClientValues('xpFlushCache')) as Record<
-    string,
-    XpFlushCache
-  >[];
+  const xpCaches = (await manager.fetchClientValues('xpFlushCache')) as Record<string, XpFlushCache>[];
   manager.broadcastEval((client) => (client.xpFlushCache = {}));
 
   await runStatFlush(shardCaches);
@@ -83,8 +73,7 @@ const combineShardCaches = (shardCaches: Record<string, StatFlushCache>[]) => {
       if (!statFlushCache[dbHost]) statFlushCache[dbHost] = {} as StatFlushCache;
 
       for (const type in shard[dbHost]) {
-        if (!statFlushCache[dbHost][type as StatType])
-          statFlushCache[dbHost][type as StatType] = {};
+        if (!statFlushCache[dbHost][type as StatType]) statFlushCache[dbHost][type as StatType] = {};
 
         // @ts-expect-error See above; needs cleanup
         statFlushCache[dbHost][type as StatType] = {

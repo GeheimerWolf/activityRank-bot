@@ -93,10 +93,7 @@ export default command.basic({
   },
 });
 
-async function confirmInviter(
-  interaction: ChatInputCommandInteraction<'cached'>,
-  inviter: GuildMember,
-) {
+async function confirmInviter(interaction: ChatInputCommandInteraction<'cached'>, inviter: GuildMember) {
   const predicate = requireUser(interaction.user);
   await interaction.reply({
     content: `Are you sure that ${inviter} was the person who invited you?\n-# **You cannot change this setting once you confirm it.**`,
@@ -136,8 +133,7 @@ const { confirmButton, denyButton } = useConfirm<{
     await statFlushCache.addInvite(interaction.member, 1);
 
     await interaction.editReply({
-      content:
-        'Your inviter has been set successfully. You will both get 1 invite added to your stats.',
+      content: 'Your inviter has been set successfully. You will both get 1 invite added to your stats.',
       components: [],
     });
     drop();

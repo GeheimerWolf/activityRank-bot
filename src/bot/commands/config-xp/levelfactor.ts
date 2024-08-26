@@ -6,8 +6,7 @@ import { resetGuildCache } from 'bot/models/resetModel.js';
 export const levelfactor = subcommand({
   data: {
     name: 'levelfactor',
-    description:
-      "Set your server's levelfactor. The levelfactor controls how quickly levels scale in difficulty.",
+    description: "Set your server's levelfactor. The levelfactor controls how quickly levels scale in difficulty.",
     type: ApplicationCommandOptionType.Subcommand,
     options: [
       {

@@ -15,9 +15,7 @@ export async function handleMemberJoin(member: GuildMember) {
   //member.client.logger.debug({ cachedGuild, cachedMember }, `cache objects`);
 
   // Roleassignments
-  const level = fct.getLevel(
-    fct.getLevelProgression(cachedMember.cache.totalXp!, cachedGuild.db.levelFactor),
-  );
+  const level = fct.getLevel(fct.getLevelProgression(cachedMember.cache.totalXp!, cachedGuild.db.levelFactor));
   /*member.client.logger.debug(
     `level ${level} ${cachedMember.cache.totalXp} ${cachedGuild.db.levelFactor}`,
     );*/
@@ -28,8 +26,7 @@ export async function handleMemberJoin(member: GuildMember) {
   // member.client.logger.debug({ roleAssignmentString }, `RAS`);
 
   // AutoPost serverjoin
-  if (cachedGuild.db.autopost_serverJoin !== '0')
-    await autoPostServerJoin(member, roleAssignmentString);
+  if (cachedGuild.db.autopost_serverJoin !== '0') await autoPostServerJoin(member, roleAssignmentString);
 }
 
 async function autoPostServerJoin(member: GuildMember, roleAssignmentString: string[]) {
@@ -62,9 +59,7 @@ async function autoPostServerJoin(member: GuildMember, roleAssignmentString: str
   } catch (_err) {
     const err = _err as DiscordAPIError;
     if (err.code === RESTJSONErrorCodes.MissingPermissions)
-      member.client.logger.debug(
-        `Missing permissions to send welcome message in guild ${member.guild.id}`,
-      );
+      member.client.logger.debug(`Missing permissions to send welcome message in guild ${member.guild.id}`);
     else throw err;
   }
 }

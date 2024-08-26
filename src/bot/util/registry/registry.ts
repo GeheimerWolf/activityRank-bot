@@ -9,12 +9,7 @@ import type {
 } from 'discord.js';
 import fg from 'fast-glob';
 import type { EventEmitter } from 'node:events';
-import {
-  type ComponentInstance,
-  type ComponentInteraction,
-  Component,
-  ComponentKey,
-} from './component.js';
+import { type ComponentInstance, type ComponentInteraction, Component, ComponentKey } from './component.js';
 import { Predicate } from './predicate.js';
 import TTLCache from '@isaacs/ttlcache';
 import { Time } from '@sapphire/duration';
@@ -22,11 +17,7 @@ import { Time } from '@sapphire/duration';
 const glob = async (paths: string | string[]) => await fg(paths, { absolute: true });
 
 const EVENT_PATHS = ['dist/bot/events/*.js'];
-const COMMAND_PATHS = [
-  'dist/bot/commands/*.js',
-  'dist/bot/commandsAdmin/*.js',
-  'dist/bot/contextMenus/*.js',
-];
+const COMMAND_PATHS = ['dist/bot/commands/*.js', 'dist/bot/commandsAdmin/*.js', 'dist/bot/contextMenus/*.js'];
 
 export async function createRegistry() {
   const config = {
@@ -54,11 +45,10 @@ export class Registry {
   #events: Map<string | symbol, EventHandler[]> = new Map();
   #commands: Map<string, Command> = new Map();
   #components: Map<string, Component<ComponentInteraction, unknown>> = new Map();
-  #activeComponents: TTLCache<string, ComponentInstance<ComponentInteraction, unknown>> =
-    new TTLCache({
-      max: 10_000,
-      ttl: 1000 * 60 * 30,
-    });
+  #activeComponents: TTLCache<string, ComponentInstance<ComponentInteraction, unknown>> = new TTLCache({
+    max: 10_000,
+    ttl: 1000 * 60 * 30,
+  });
 
   constructor(private config: { eventFiles: string[]; commandFiles: string[] }) {}
 
@@ -136,9 +126,7 @@ export class Registry {
     }
   }
 
-  public async handleSlashCommand(
-    interaction: ChatInputCommandInteraction<'cached'>,
-  ): Promise<void> {
+  public async handleSlashCommand(interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
     const command = this.getCommand(interaction.commandName);
     const index = new CommandIndex(interaction);
 
@@ -151,9 +139,7 @@ export class Registry {
     await command.execute(index, interaction);
   }
 
-  public async handleContextCommand(
-    interaction: ContextMenuCommandInteraction<'cached'>,
-  ): Promise<void> {
+  public async handleContextCommand(interaction: ContextMenuCommandInteraction<'cached'>): Promise<void> {
     const command = this.getCommand(interaction.commandName);
     const index = new CommandIndex(interaction);
 
@@ -194,10 +180,7 @@ export class Registry {
   ): boolean {
     const split = Component.splitCustomId(interaction.customId);
 
-    return (
-      split.status === 'SPECIAL_KEY' ||
-      (split.status === 'SUCCESS' && this.#components.has(split.component))
-    );
+    return split.status === 'SPECIAL_KEY' || (split.status === 'SUCCESS' && this.#components.has(split.component));
   }
 
   public async handleComponent(
@@ -207,8 +190,7 @@ export class Registry {
     if (split.status === 'INVALID_VERSION') {
       if (interaction.isRepliable()) {
         await interaction.reply({
-          content:
-            "Oops! It's been a while since this component was made. Try running the command again.",
+          content: "Oops! It's been a while since this component was made. Try running the command again.",
           ephemeral: true,
         });
       }

@@ -44,9 +44,7 @@ async function main() {
     // get all guild IDs managed by the bot, cursor-paginated by ID
     /** @type {string[]} */
     const guildIds = (
-      await conn.query(
-        `SELECT guildId FROM guild WHERE guildId > ${highestId} ORDER BY guildId ASC LIMIT 1000;`,
-      )
+      await conn.query(`SELECT guildId FROM guild WHERE guildId > ${highestId} ORDER BY guildId ASC LIMIT 1000;`)
     )[0].map(({ guildId }) => guildId);
 
     if (guildIds.length < 1) {
@@ -58,8 +56,9 @@ async function main() {
 
     for (const guildId of guildIds) {
       // destructure getGuildInfo result
-      const [[{ xpPerVoiceMinute, xpPerTextMessage, xpPerVote, xpPerInvite, xpPerBonus }]] =
-        await getGuildInfo.execute([guildId]);
+      const [[{ xpPerVoiceMinute, xpPerTextMessage, xpPerVote, xpPerInvite, xpPerBonus }]] = await getGuildInfo.execute(
+        [guildId],
+      );
 
       const [{ affectedRows }] = await mainQuery.execute(
         [

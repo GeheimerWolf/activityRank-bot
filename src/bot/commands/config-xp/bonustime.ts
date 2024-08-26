@@ -20,9 +20,7 @@ export const bonustime = subcommand({
     ],
   },
   async execute({ interaction }) {
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)) {
       await interaction.reply({
         content: 'You need the permission to manage the server in order to use this command.',
         ephemeral: true,
@@ -31,9 +29,7 @@ export const bonustime = subcommand({
     }
     const cachedGuild = await getGuildModel(interaction.guild);
 
-    const bonusUntilDate = Math.floor(
-      Date.now() / 1000 + interaction.options.getInteger('time', true) * 60,
-    );
+    const bonusUntilDate = Math.floor(Date.now() / 1000 + interaction.options.getInteger('time', true) * 60);
     await cachedGuild.upsert({ bonusUntilDate: bonusUntilDate.toString() });
 
     if (bonusUntilDate <= Date.now() / 1000) {

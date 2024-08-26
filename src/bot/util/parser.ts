@@ -45,20 +45,14 @@ function parseObject<T>(
   }
 }
 
-export function parseChannel(
-  interaction: ChatInputCommandInteraction<'cached'>,
-): ParsedResponse<GuildBasedChannel> {
+export function parseChannel(interaction: ChatInputCommandInteraction<'cached'>): ParsedResponse<GuildBasedChannel> {
   return parseObject(interaction, 'channel', (id) => interaction.guild.channels.cache.get(id));
 }
 
-export function parseRole(
-  interaction: ChatInputCommandInteraction<'cached'>,
-): ParsedResponse<Role> {
+export function parseRole(interaction: ChatInputCommandInteraction<'cached'>): ParsedResponse<Role> {
   return parseObject(interaction, 'role', (id) => interaction.guild.roles.cache.get(id));
 }
 
-export function parseMember(
-  interaction: ChatInputCommandInteraction<'cached'>,
-): ParsedResponse<GuildMember> {
+export function parseMember(interaction: ChatInputCommandInteraction<'cached'>): ParsedResponse<GuildMember> {
   return parseObject(interaction, 'member', (id) => interaction.guild.members.cache.get(id));
 }

@@ -11,10 +11,7 @@ import {
 } from 'discord.js';
 import { deprecate } from 'node:util';
 
-export const getChannelName = (
-  channels: Collection<string, GuildBasedChannel>,
-  channelId: string,
-) => {
+export const getChannelName = (channels: Collection<string, GuildBasedChannel>, channelId: string) => {
   const channel = channels.get(channelId);
 
   if (channel) return cutName(channel.name);
@@ -69,10 +66,7 @@ export const getChannelTypeIcon = (channels: Collection<string, Channel>, channe
 
 export const getGuildMemberInfos = async (guild: Guild, userIds: string[]) => {
   const userIdsToFetch: string[] = [];
-  const infos: Record<
-    string,
-    { name: string; avatarUrl: string | null; joinedAt: number | string }
-  > = {};
+  const infos: Record<string, { name: string; avatarUrl: string | null; joinedAt: number | string }> = {};
 
   const cachedGuild = await getGuildModel(guild);
 

@@ -1,11 +1,7 @@
 import type { Guild, GuildBasedChannel } from 'discord.js';
 import shardDb from '../../../models/shardDb/shardDb.js';
 import { escape } from 'mysql2/promise';
-import type {
-  GuildChannelSchema,
-  TextMessageSchema,
-  VoiceMinuteSchema,
-} from 'models/types/shard.js';
+import type { GuildChannelSchema, TextMessageSchema, VoiceMinuteSchema } from 'models/types/shard.js';
 import { getGuildModel } from './guildModel.js';
 
 const cachedFields = ['noXp', 'noCommand'] as const;
@@ -136,8 +132,7 @@ const loadDefaultCache = async (dbHost: string) => {
     `SELECT ${cachedFields.join(',')} FROM guildChannel WHERE guildId = 0 AND channelId = 0`,
   );
 
-  if (res.length == 0)
-    await shardDb.query(dbHost, `INSERT IGNORE INTO guildChannel (guildId,channelId) VALUES (0,0)`);
+  if (res.length == 0) await shardDb.query(dbHost, `INSERT IGNORE INTO guildChannel (guildId,channelId) VALUES (0,0)`);
 
   res = await shardDb.query(
     dbHost,

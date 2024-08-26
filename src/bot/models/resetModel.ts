@@ -6,11 +6,7 @@ import { channelCache, getRankedChannelIds } from './guild/guildChannelModel.js'
 import { getGuildModel, guildCache } from './guild/guildModel.js';
 import { roleCache } from './guild/guildRoleModel.js';
 import type { ButtonInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
-import type {
-  Guild as DBGuild,
-  GuildMemberUpdate,
-  GuildUpdate,
-} from 'models/types/kysely/shard.js';
+import type { Guild as DBGuild, GuildMemberUpdate, GuildUpdate } from 'models/types/kysely/shard.js';
 import { sql } from 'kysely';
 import { sleep } from 'util/fct.js';
 import { logger } from 'bot/util/logger.js';
@@ -104,9 +100,7 @@ abstract class ResetJob {
   /** Determine the number of rows that need to be modified, and set {@link this.rowEstimation}. */
   public async plan(): Promise<{ rowEstimation: number }> {
     if (this.status !== ResetStatus.Waiting) {
-      throw new Error(
-        `ResetJob.plan() called during stage ${this.status} (expected ${ResetStatus.Waiting})`,
-      );
+      throw new Error(`ResetJob.plan() called during stage ${this.status} (expected ${ResetStatus.Waiting})`);
     }
 
     logger.debug(`Planning reset job ${this.jobId}`);
@@ -284,14 +278,9 @@ export function renderProgressBar(fraction: number): string {
 export class ResetGuildSettings extends ResetJob {
   protected getStatusContent(): string {
     if (this.totalRowsAffected >= this.rowEstimation!) {
-      return (
-        '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-      );
+      return '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
     }
-    return (
-      '### Resetting Server Settings...\n' +
-      renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-    );
+    return '### Resetting Server Settings...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
   }
 
   protected async getPlan(): Promise<{ rowEstimation: number }> {
@@ -351,11 +340,7 @@ export class ResetGuildSettings extends ResetJob {
       guildKeys.filter((k) => !PERMANENT_GUILD_FIELDS.has(k)).map((k) => [k, sql`DEFAULT`]),
     );
 
-    await db
-      .updateTable('guild')
-      .set(defaultEntries)
-      .where('guildId', '=', this.guild.id)
-      .executeTakeFirstOrThrow();
+    await db.updateTable('guild').set(defaultEntries).where('guildId', '=', this.guild.id).executeTakeFirstOrThrow();
 
     // regenerate caches
     resetGuildCache(this.guild).allRoles();
@@ -377,14 +362,9 @@ export class ResetGuildChannelsStatistics extends ResetJob {
 
   protected getStatusContent(): string {
     if (this.totalRowsAffected >= this.rowEstimation!) {
-      return (
-        '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-      );
+      return '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
     }
-    return (
-      '### Resetting Channel Statistics...\n' +
-      renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-    );
+    return '### Resetting Channel Statistics...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
   }
 
   protected async getPlan(): Promise<{ rowEstimation: number }> {
@@ -452,14 +432,9 @@ export class ResetGuildMembersStatistics extends ResetJob {
 
   protected getStatusContent(): string {
     if (this.totalRowsAffected >= this.rowEstimation!) {
-      return (
-        '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-      );
+      return '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
     }
-    return (
-      '### Resetting Member Statistics...\n' +
-      renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-    );
+    return '### Resetting Member Statistics...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
   }
 
   protected async getPlan(): Promise<{ rowEstimation: number }> {
@@ -512,14 +487,7 @@ export class ResetGuildMembersStatistics extends ResetJob {
 
     if (!this.canContinue) return false;
 
-    const resetKeys: (keyof GuildMemberUpdate)[] = [
-      'inviter',
-      'day',
-      'week',
-      'month',
-      'year',
-      'alltime',
-    ];
+    const resetKeys: (keyof GuildMemberUpdate)[] = ['inviter', 'day', 'week', 'month', 'year', 'alltime'];
 
     const defaultEntries = Object.fromEntries(resetKeys.map((k) => [k, sql`DEFAULT`]));
 
@@ -555,14 +523,9 @@ export class ResetGuildStatisticsAndXP extends ResetJob {
 
   protected getStatusContent(): string {
     if (this.totalRowsAffected >= this.rowEstimation!) {
-      return (
-        '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-      );
+      return '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
     }
-    return (
-      '### Resetting Server Statistics...\n' +
-      renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-    );
+    return '### Resetting Server Statistics...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
   }
 
   protected async getPlan(): Promise<{ rowEstimation: number }> {
@@ -662,21 +625,14 @@ export class ResetGuildAll extends ResetJob {
   constructor(guild: Guild) {
     super(guild);
     this.resetSettings = new ResetGuildSettings(guild);
-    this.resetStatistics = new ResetGuildStatisticsAndXP(
-      guild,
-      ResetGuildStatisticsAndXP.ALL_TABLES,
-    );
+    this.resetStatistics = new ResetGuildStatisticsAndXP(guild, ResetGuildStatisticsAndXP.ALL_TABLES);
   }
 
   protected getStatusContent(): string {
     if (this.totalRowsAffected >= this.rowEstimation!) {
-      return (
-        '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-      );
+      return '### Reset complete!\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
     }
-    return (
-      '### Resetting Server...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!)
-    );
+    return '### Resetting Server...\n' + renderProgressBar(this.totalRowsAffected / this.rowEstimation!);
   }
 
   protected async getPlan(): Promise<{ rowEstimation: number }> {
@@ -712,13 +668,11 @@ export class ResetGuildAll extends ResetJob {
   protected async runIter(): Promise<boolean> {
     if (this.resetSettings.status !== ResetStatus.Complete) {
       await this.resetSettings.run();
-      this._totalRowsAffected =
-        this.resetSettings.totalRowsAffected + this.resetStatistics.totalRowsAffected;
+      this._totalRowsAffected = this.resetSettings.totalRowsAffected + this.resetStatistics.totalRowsAffected;
       return false;
     } else if (this.resetStatistics.status !== ResetStatus.Complete) {
       await this.resetStatistics.run();
-      this._totalRowsAffected =
-        this.resetSettings.totalRowsAffected + this.resetStatistics.totalRowsAffected;
+      this._totalRowsAffected = this.resetSettings.totalRowsAffected + this.resetStatistics.totalRowsAffected;
       return false;
     }
     return true;

@@ -31,9 +31,7 @@ type BooleanGuildKey =
   | 'voteXp'
   | 'resetDeletedMembers';
 
-const generateRows = async (
-  interaction: Interaction<'cached'>,
-): Promise<ActionRowData<ButtonComponentData>[]> => {
+const generateRows = async (interaction: Interaction<'cached'>): Promise<ActionRowData<ButtonComponentData>[]> => {
   const cachedGuild = await getGuildModel(interaction.guild);
   const rows: {
     label?: string;
@@ -113,9 +111,7 @@ export const set = subcommand({
     type: ApplicationCommandOptionType.Subcommand,
   },
   async execute({ interaction }) {
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)) {
       await interaction.reply({
         content: 'You need the permission to manage the server in order to use this command.',
         ephemeral: true,
@@ -131,8 +127,7 @@ export const set = subcommand({
       fields: [
         {
           name: 'Use Nicknames',
-          value:
-            'If this is enabled, nicknames will be used to represent members instead of their Discord usernames',
+          value: 'If this is enabled, nicknames will be used to represent members instead of their Discord usernames',
         },
         {
           name: 'Reaction Voting',
@@ -140,13 +135,11 @@ export const set = subcommand({
         },
         {
           name: 'Allow Muted XP',
-          value:
-            'If this is enabled, members will be permitted to gain XP in VCs, even when they are muted.',
+          value: 'If this is enabled, members will be permitted to gain XP in VCs, even when they are muted.',
         },
         {
           name: 'Allow Deafened XP',
-          value:
-            'If this is enabled, members will be permitted to gain XP in VCs, even when they are deafened.',
+          value: 'If this is enabled, members will be permitted to gain XP in VCs, even when they are deafened.',
         },
         {
           name: 'Allow Solo XP',
@@ -155,8 +148,7 @@ export const set = subcommand({
         },
         {
           name: 'TAAROLD (Take Away Assigned Roles On Level Down)',
-          value:
-            'If this is enabled, the bot will remove roles when the member falls below their assignLevel.',
+          value: 'If this is enabled, the bot will remove roles when the member falls below their assignLevel.',
         },
         {
           name: 'Notify Via DM',

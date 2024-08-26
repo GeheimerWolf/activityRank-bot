@@ -38,8 +38,7 @@ export default command.basic({
     const lastActivities = await getLastActivities(interaction.guild, member.id);
 
     const inviterInfo = await getGuildMemberInfo(interaction.guild, myTargetMember.inviter);
-    if (inviterInfo.name == 'User left [0]')
-      inviterInfo.name = 'No inviter set. Use `/inviter` to set one!';
+    if (inviterInfo.name == 'User left [0]') inviterInfo.name = 'No inviter set. Use `/inviter` to set one!';
 
     const getActivityString = (
       name: string,
@@ -72,9 +71,7 @@ export default command.basic({
     const patreonText =
       patreonTierUntilDate.getTime() > Date.now() / 1000 && myTargetUser.patreonTier > 0
         ? stripIndent`
-          Active Tier: ${myTargetUser.patreonTier} (${fct.getPatreonTierName(
-            myTargetUser.patreonTier,
-          )})
+          Active Tier: ${myTargetUser.patreonTier} (${fct.getPatreonTierName(myTargetUser.patreonTier)})
           Valid until: ${time(patreonTierUntilDate, 'D')}, ${time(patreonTierUntilDate, 'R')}`
         : 'No active Tier';
 

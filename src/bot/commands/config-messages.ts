@@ -38,11 +38,7 @@ const generateRows = async (interaction: Interaction<'cached'>) => {
   ];
 };
 
-type ServerMessage =
-  | 'serverJoinMessage'
-  | 'levelupMessage'
-  | 'roleAssignMessage'
-  | 'roleDeassignMessage';
+type ServerMessage = 'serverJoinMessage' | 'levelupMessage' | 'roleAssignMessage' | 'roleDeassignMessage';
 
 const _prettifyId: Record<ServerMessage, string> = {
   serverJoinMessage: 'Server Join Message',
@@ -75,9 +71,7 @@ export default command.basic({
     default_member_permissions: permissions(permissions.ManageGuild),
   },
   async execute({ interaction }) {
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)) {
       await interaction.reply({
         content: 'You need the permission to manage the server in order to use this command.',
         ephemeral: true,

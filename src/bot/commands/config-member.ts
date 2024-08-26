@@ -7,11 +7,7 @@ import { actionrow, closeButton } from 'bot/util/component.js';
 import { component } from 'bot/util/registry/component.js';
 import { requireUser } from 'bot/util/predicates.js';
 
-const generateRow = (
-  interaction: Interaction<'cached'>,
-  myMember: GuildMemberModel,
-  myGuild: GuildModel,
-) => {
+const generateRow = (interaction: Interaction<'cached'>, myMember: GuildMemberModel, myGuild: GuildModel) => {
   const predicate = requireUser(interaction.user);
   return actionrow([
     {

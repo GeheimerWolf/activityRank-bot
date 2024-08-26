@@ -21,8 +21,7 @@ import { registry } from 'bot/util/registry/registry.js';
 
 export default event(Events.InteractionCreate, async (interaction) => {
   try {
-    if (!interaction.inCachedGuild())
-      throw new Error('Interaction recieved outside of cached guild.');
+    if (!interaction.inCachedGuild()) throw new Error('Interaction recieved outside of cached guild.');
 
     if (interaction.isAutocomplete()) {
       await registry.handleAutocomplete(interaction);
@@ -105,11 +104,7 @@ export default event(Events.InteractionCreate, async (interaction) => {
       const e2 = _e2 as DiscordAPIError | Error;
       if ('code' in e2 && e2.code === RESTJSONErrorCodes.UnknownInteraction)
         interaction.client.logger.debug('Unknown interaction while responding to command error');
-      else
-        interaction.client.logger.error(
-          { err: e2, interaction },
-          'Error while responding to command error',
-        );
+      else interaction.client.logger.error({ err: e2, interaction }, 'Error while responding to command error');
     }
     interaction.client.logger.warn({ err: e, interaction }, 'Command error');
   }
@@ -123,17 +118,10 @@ async function executeBans(
   if (cachedGuild.db.isBanned) {
     interaction.client.logger.debug(`Banned guild ${interaction.guild.id} used interaction.`);
     await interaction.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setDescription('❌ This server been blacklisted from the bot.')
-          .setColor(0xff0000),
-      ],
+      embeds: [new EmbedBuilder().setDescription('❌ This server been blacklisted from the bot.').setColor(0xff0000)],
       components: [
         new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setStyle(ButtonStyle.Link)
-            .setURL(config.supportServer.invite)
-            .setLabel('Appeal'),
+          new ButtonBuilder().setStyle(ButtonStyle.Link).setURL(config.supportServer.invite).setLabel('Appeal'),
         ),
       ],
     });
@@ -146,17 +134,10 @@ async function executeBans(
   if (cachedUser.db.isBanned) {
     interaction.client.logger.debug(`Banned user ${interaction.user.id} used interaction.`);
     await interaction.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setDescription('❌ You have been blacklisted from the bot.')
-          .setColor(0xff0000),
-      ],
+      embeds: [new EmbedBuilder().setDescription('❌ You have been blacklisted from the bot.').setColor(0xff0000)],
       components: [
         new ActionRowBuilder<ButtonBuilder>().setComponents(
-          new ButtonBuilder()
-            .setStyle(ButtonStyle.Link)
-            .setURL(config.supportServer.invite)
-            .setLabel('Appeal'),
+          new ButtonBuilder().setStyle(ButtonStyle.Link).setURL(config.supportServer.invite).setLabel('Appeal'),
         ),
       ],
       ephemeral: true,

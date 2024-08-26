@@ -18,9 +18,7 @@ export const all = subcommand({
     type: ApplicationCommandOptionType.Subcommand,
   },
   async execute({ interaction }) {
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.Administrator)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.Administrator)) {
       await interaction.reply({
         content: 'You need the ADMINISTRATOR permission to use this command.',
         ephemeral: true,

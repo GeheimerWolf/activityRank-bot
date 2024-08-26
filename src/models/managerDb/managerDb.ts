@@ -75,8 +75,7 @@ export async function mgrFetch<T>(body: any, route: string, method: string) {
 
     if (body !== null) requestObject.body = JSON.stringify(body);
 
-    const fetchURL =
-      'http://' + keys.managerHost + (keys.managerPort ? `:${keys.managerPort}` : '') + route;
+    const fetchURL = 'http://' + keys.managerHost + (keys.managerPort ? `:${keys.managerPort}` : '') + route;
 
     const res = await fetch(fetchURL, requestObject);
 

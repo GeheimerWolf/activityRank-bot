@@ -35,11 +35,7 @@ export async function addTextMessage(
     await addBonus(member, count * cachedGuild.db.bonusPerTextMessage);
 }
 
-export async function addVoiceMinute(
-  member: GuildMember,
-  channel: VoiceBasedChannel,
-  count: number,
-) {
+export async function addVoiceMinute(member: GuildMember, channel: VoiceBasedChannel, count: number) {
   // Add to FlushCache
   const voiceMinuteCache = await buildStatFlushCache(member.client, member.guild, 'voiceMinute');
 
@@ -140,12 +136,7 @@ const addTotalXp = async (member: GuildMember, xp: number) => {
 };
 
 // beta function
-export const directlyAddBonus = async (
-  userId: string,
-  guild: Guild,
-  client: Client,
-  count: number,
-) => {
+export const directlyAddBonus = async (userId: string, guild: Guild, client: Client, count: number) => {
   const bonusCache = await buildStatFlushCache(client, guild, 'bonus')!;
 
   count *= 1; // ?

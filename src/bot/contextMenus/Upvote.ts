@@ -8,9 +8,7 @@ export default context.user({
   },
   async execute({ interaction }) {
     if (!interaction.inCachedGuild()) throw new Error('Upvote context menu not in cached guild');
-    const targetMember = await interaction.guild.members
-      .fetch(interaction.targetId)
-      .catch(() => null);
+    const targetMember = await interaction.guild.members.fetch(interaction.targetId).catch(() => null);
 
     if (!targetMember) {
       await interaction.reply({

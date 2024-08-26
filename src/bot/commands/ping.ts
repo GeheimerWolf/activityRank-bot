@@ -27,10 +27,7 @@ export default command.basic({
       .setTimestamp();
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder()
-        .setLabel('Invite the bot')
-        .setURL(config.invite.standard)
-        .setStyle(ButtonStyle.Link),
+      new ButtonBuilder().setLabel('Invite the bot').setURL(config.invite.standard).setStyle(ButtonStyle.Link),
     );
 
     await interaction.editReply({

@@ -62,12 +62,9 @@ export const levels = subcommand({
       return;
     }
 
-    if (
-      !interaction.member.permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageRoles)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageRoles)) {
       await interaction.reply({
-        content:
-          'Please ensure the bot has the permission to manage roles for the duration of this setup.',
+        content: 'Please ensure the bot has the permission to manage roles for the duration of this setup.',
         ephemeral: true,
       });
       return;
@@ -97,11 +94,7 @@ export const levels = subcommand({
     for (const _k in items) {
       const k = _k as keyof typeof items;
       const item = items[k];
-      const roleAssignmentsByLevel = await guildRoleModel.storage.getRoleAssignmentsByLevel(
-        interaction.guild,
-        k,
-        item,
-      );
+      const roleAssignmentsByLevel = await guildRoleModel.storage.getRoleAssignmentsByLevel(interaction.guild, k, item);
       if (item !== 0 && roleAssignmentsByLevel.length >= 3) {
         await interaction.reply({
           content:
@@ -115,10 +108,7 @@ export const levels = subcommand({
       }
     }
 
-    const roleAssignments = await guildRoleModel.storage.getRoleAssignmentsByRole(
-      interaction.guild,
-      resolvedRole.id,
-    );
+    const roleAssignments = await guildRoleModel.storage.getRoleAssignmentsByRole(interaction.guild, resolvedRole.id);
 
     const embed: APIEmbed = {
       author: { name: 'Assign/Deassignments for this role' },

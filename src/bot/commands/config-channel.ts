@@ -21,12 +21,7 @@ import { component } from 'bot/util/registry/component.js';
 import { requireUser, requireUserId } from 'bot/util/predicates.js';
 import { actionrow, closeButton } from 'bot/util/component.js';
 
-type Setting =
-  | 'noXp'
-  | 'noCommand'
-  | 'commandOnlyChannel'
-  | 'autopost_serverJoin'
-  | 'autopost_levelup';
+type Setting = 'noXp' | 'noCommand' | 'commandOnlyChannel' | 'autopost_serverJoin' | 'autopost_levelup';
 
 const settingButton = component<{
   channelId: string;
@@ -42,8 +37,7 @@ const settingButton = component<{
     const cachedGuild = await getGuildModel(interaction.guild);
 
     if (setting === 'noXp') {
-      if (myChannel.noXp)
-        await guildChannelModel.storage.set(interaction.guild, channelId, 'noXp', 0);
+      if (myChannel.noXp) await guildChannelModel.storage.set(interaction.guild, channelId, 'noXp', 0);
       else await guildChannelModel.storage.set(interaction.guild, channelId, 'noXp', 1);
 
       myChannel = await guildChannelModel.storage.get(interaction.guild, channelId);
@@ -199,9 +193,7 @@ export default command.basic({
       return;
     }
 
-    if (
-      !interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.member.permissionsIn(interaction.channel!).has(PermissionFlagsBits.ManageGuild)) {
       await interaction.reply({
         content: 'You need the permission to manage the server in order to use this command.',
         ephemeral: true,
@@ -213,9 +205,7 @@ export default command.basic({
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: 'Channel Settings' })
-      .setDescription(
-        nameUtil.getChannelMention(interaction.guild.channels.cache, resolvedChannel.id),
-      )
+      .setDescription(nameUtil.getChannelMention(interaction.guild.channels.cache, resolvedChannel.id))
       .setColor(0x00ae86)
       .addFields({
         name: 'No XP',

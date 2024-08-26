@@ -10,5 +10,4 @@ export default (opts: pretty.PrettyOptions) =>
   });
 
 const format: pretty.PinoPretty.MessageFormatFunc = (log, messageKey) =>
-  ('shards' in log && Array.isArray(log.shards) ? `[${log.shards.join(', ')}] ` : '') +
-  log[messageKey];
+  ('shards' in log && Array.isArray(log.shards) ? `[${log.shards.join(', ')}] ` : '') + log[messageKey];

@@ -23,9 +23,7 @@ export const useConfirm = <D = void>(args: {
  * Create an action row for use in a modal.
  * @param components The components to add to the action row.
  */
-export function actionrow(
-  components: ModalActionRowComponentData[],
-): ActionRowData<ModalActionRowComponentData>;
+export function actionrow(components: ModalActionRowComponentData[]): ActionRowData<ModalActionRowComponentData>;
 /**
  * Create an action row for use in a component response.
  * @param components The components to add to the action row.
@@ -34,9 +32,7 @@ export function actionrow(
   components: (MessageActionRowComponentData | MessageActionRowComponentBuilder)[],
 ): ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>;
 export function actionrow(
-  components:
-    | (MessageActionRowComponentData | MessageActionRowComponentBuilder)[]
-    | ModalActionRowComponentData[],
+  components: (MessageActionRowComponentData | MessageActionRowComponentBuilder)[] | ModalActionRowComponentData[],
 ):
   | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
   | ActionRowData<ModalActionRowComponentData> {

@@ -9,9 +9,7 @@ import { PATREON_COMPONENTS, PATREON_URL } from './constants.js';
 const premiumLowersCooldownMessage = `You can significantly lower this cooldown by supporting the bot and choosing the proper patreon tier for your needs. You can find further info about it [on our Patreon](<${PATREON_URL}>).`;
 
 const activeStatCommandCooldown = (cd: number, next: Date) =>
-  `You can use stat commands only once per ${Math.floor(
-    cd / 1000,
-  )} seconds. You can use it again ${time(next, 'R')}.`;
+  `You can use stat commands only once per ${Math.floor(cd / 1000)} seconds. You can use it again ${time(next, 'R')}.`;
 
 const activeResetServerCommandCooldown = (cd: number, next: Date) =>
   `You can start a server reset only once every ${Math.floor(
@@ -51,9 +49,7 @@ export const getCachedCooldown = (cache, field, cd) => {
   return remaining;
 };
 
-export const checkStatCommandsCooldown = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-) => {
+export const checkStatCommandsCooldown = async (interaction: ChatInputCommandInteraction<'cached'>) => {
   if (isPrivileged(interaction.user.id)) return true;
 
   const { userTier, ownerTier } = await fct.getPatreonTiers(interaction);
@@ -89,9 +85,7 @@ export const checkStatCommandsCooldown = async (
   return true;
 };
 
-export const checkResetServerCommandCooldown = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-) => {
+export const checkResetServerCommandCooldown = async (interaction: ChatInputCommandInteraction<'cached'>) => {
   const { userTier, ownerTier } = await fct.getPatreonTiers(interaction);
 
   let cd = Time.Hour / 2;
@@ -99,8 +93,7 @@ export const checkResetServerCommandCooldown = async (
   if (ownerTier == 3) cd = Time.Minute * 5;
   if (userTier == 2 || userTier == 3) cd = Time.Minute * 2;
 
-  const premiumLowersCooldownString =
-    userTier == 2 || userTier == 3 ? '' : premiumLowersCooldownMessage;
+  const premiumLowersCooldownString = userTier == 2 || userTier == 3 ? '' : premiumLowersCooldownMessage;
 
   const cachedGuild = await getGuildModel(interaction.guild);
 

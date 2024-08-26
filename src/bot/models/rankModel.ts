@@ -35,9 +35,7 @@ export const getGuildMemberRanks = async <T extends StatTimeInterval>(
 export const getGuildMemberRank = async (guild: Guild, userId: string) => {
   const cachedGuild = await getGuildModel(guild);
 
-  const res = await shardDb.query<
-    Record<`${StatType | 'totalScore'}${StatTimeInterval}`, number>[]
-  >(
+  const res = await shardDb.query<Record<`${StatType | 'totalScore'}${StatTimeInterval}`, number>[]>(
     cachedGuild.dbHost,
     `SELECT * FROM ${getGuildMemberRankSql(cachedGuild, guild.id, userId)} AS memberrank`,
   );
@@ -48,11 +46,7 @@ export const getGuildMemberRank = async (guild: Guild, userId: string) => {
 };
 
 // Positions of one type of one member within a guild
-export const getGuildMemberRankPosition = async (
-  guild: Guild,
-  userId: string,
-  typeTime: string,
-) => {
+export const getGuildMemberRankPosition = async (guild: Guild, userId: string, typeTime: string) => {
   const cachedGuild = await getGuildModel(guild);
 
   const res = await shardDb.query<{ count: number }[]>(

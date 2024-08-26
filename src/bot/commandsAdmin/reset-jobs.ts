@@ -1,10 +1,6 @@
 import { command, permissions } from 'bot/util/registry/command.js';
 import { HELPSTAFF_ONLY } from 'bot/util/predicates.js';
-import {
-  AttachmentBuilder,
-  ApplicationCommandOptionType,
-  type InteractionReplyOptions,
-} from 'discord.js';
+import { AttachmentBuilder, ApplicationCommandOptionType, type InteractionReplyOptions } from 'discord.js';
 import { RESET_JOBS, RESET_QUEUE } from 'bot/models/resetModel.js';
 
 export default command.basic({

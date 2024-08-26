@@ -59,12 +59,7 @@ interface GuildCacheStorage {
 }
 export const guildCache = new WeakMap<Guild, GuildModel>();
 
-export class GuildModel extends CachedModel<
-  Guild,
-  GuildSchema,
-  typeof cachedFields,
-  GuildCacheStorage
-> {
+export class GuildModel extends CachedModel<Guild, GuildSchema, typeof cachedFields, GuildCacheStorage> {
   async fetch() {
     const guild = await this.handle
       .selectFrom('guild')

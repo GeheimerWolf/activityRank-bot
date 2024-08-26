@@ -1,9 +1,4 @@
-import {
-  ButtonStyle,
-  ComponentType,
-  type APIActionRowComponent,
-  type APIMessageActionRowComponent,
-} from 'discord.js';
+import { ButtonStyle, ComponentType, type APIActionRowComponent, type APIMessageActionRowComponent } from 'discord.js';
 
 export const PATREON_URL = 'https://www.patreon.com/rapha01';
 

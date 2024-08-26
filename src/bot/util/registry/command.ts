@@ -26,9 +26,7 @@ export class CommandIndex implements Serializable {
   private key: string[];
   private isContext?: boolean;
 
-  constructor(
-    data: ChatInputCommandInteraction | ContextMenuCommandInteraction | (string | null)[],
-  ) {
+  constructor(data: ChatInputCommandInteraction | ContextMenuCommandInteraction | (string | null)[]) {
     let key: (string | null)[];
 
     if (Array.isArray(data)) {
@@ -38,11 +36,7 @@ export class CommandIndex implements Serializable {
         this.isContext = true;
         key = [data.commandName];
       } else {
-        key = [
-          data.commandName,
-          data.options.getSubcommandGroup(false),
-          data.options.getSubcommand(false),
-        ];
+        key = [data.commandName, data.options.getSubcommandGroup(false), data.options.getSubcommand(false)];
       }
     }
 
@@ -57,9 +51,7 @@ export class CommandIndex implements Serializable {
   }
 
   toString(): string {
-    return this.isContext
-      ? `[Context Command "${this.key.join(' ')}"]`
-      : `[Slash Command /${this.key.join(' ')}]`;
+    return this.isContext ? `[Context Command "${this.key.join(' ')}"]` : `[Slash Command /${this.key.join(' ')}]`;
   }
 }
 export class AutocompleteIndex implements Serializable {
@@ -72,16 +64,11 @@ export class AutocompleteIndex implements Serializable {
     let key: (string | null)[];
 
     if (Array.isArray(data)) {
-      if (!autocompleteName)
-        throw new TypeError('autocompleteName is required when initialising AutocompleteIndex');
+      if (!autocompleteName) throw new TypeError('autocompleteName is required when initialising AutocompleteIndex');
       key = data;
       this.autocompleteName = autocompleteName;
     } else {
-      key = [
-        data.commandName,
-        data.options.getSubcommandGroup(false),
-        data.options.getSubcommand(false),
-      ];
+      key = [data.commandName, data.options.getSubcommandGroup(false), data.options.getSubcommand(false)];
       this.autocompleteName = data.options.getFocused(true).name;
     }
 
@@ -120,14 +107,10 @@ type AutocompleteMap<V> = SerializableMap<AutocompleteIndex, V>;
 
 export interface CommandPredicateConfig {
   validate: (user: User) => Predicate;
-  invalidCallback: InvalidPredicateCallback<
-    ChatInputCommandInteraction | ContextMenuCommandInteraction
-  >;
+  invalidCallback: InvalidPredicateCallback<ChatInputCommandInteraction | ContextMenuCommandInteraction>;
 }
 
-type CommandPredicateCheck = PredicateCheck<
-  ChatInputCommandInteraction | ContextMenuCommandInteraction
->;
+type CommandPredicateCheck = PredicateCheck<ChatInputCommandInteraction | ContextMenuCommandInteraction>;
 
 export abstract class Command {
   public abstract readonly data: RESTPostAPIApplicationCommandsJSONBody;
@@ -139,30 +122,19 @@ export abstract class Command {
 
   public abstract checkPredicate(index: CommandIndex, user: User): CommandPredicateCheck;
 
-  protected evaluatePredicate(
-    predicate: CommandPredicateConfig | null,
-    user: User,
-  ): CommandPredicateCheck {
+  protected evaluatePredicate(predicate: CommandPredicateConfig | null, user: User): CommandPredicateCheck {
     if (!predicate) return { status: Predicate.Allow };
 
     const status = predicate.validate(user);
 
-    return status === Predicate.Allow
-      ? { status }
-      : { status, callback: predicate.invalidCallback };
+    return status === Predicate.Allow ? { status } : { status, callback: predicate.invalidCallback };
   }
 }
 
 export abstract class SlashCommand extends Command {
-  public abstract execute(
-    index: CommandIndex,
-    interaction: ChatInputCommandInteraction<'cached'>,
-  ): Promise<void>;
+  public abstract execute(index: CommandIndex, interaction: ChatInputCommandInteraction<'cached'>): Promise<void>;
 
-  public abstract autocomplete(
-    index: AutocompleteIndex,
-    interaction: AutocompleteInteraction<'cached'>,
-  ): Promise<void>;
+  public abstract autocomplete(index: AutocompleteIndex, interaction: AutocompleteInteraction<'cached'>): Promise<void>;
 }
 
 export type BasicSlashCommandData = Omit<
@@ -192,17 +164,11 @@ class BasicSlashCommand extends SlashCommand {
     return this.evaluatePredicate(this.predicate, user);
   }
 
-  public async execute(
-    _idx: CommandIndex,
-    interaction: ChatInputCommandInteraction<'cached'>,
-  ): Promise<void> {
+  public async execute(_idx: CommandIndex, interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
     await this.executables.execute({ interaction, client: interaction.client });
   }
 
-  public async autocomplete(
-    idx: AutocompleteIndex,
-    interaction: AutocompleteInteraction<'cached'>,
-  ): Promise<void> {
+  public async autocomplete(idx: AutocompleteIndex, interaction: AutocompleteInteraction<'cached'>): Promise<void> {
     const autocomplete = this.executables.autocomplete.get(idx);
     if (!autocomplete) {
       throw new UnimplementedError(`Autocomplete not implemented: ${idx}`);
@@ -283,10 +249,7 @@ class ParentSlashCommand extends SlashCommand {
     return this.evaluatePredicate(predicate, user);
   }
 
-  public async execute(
-    index: CommandIndex,
-    interaction: ChatInputCommandInteraction<'cached'>,
-  ): Promise<void> {
+  public async execute(index: CommandIndex, interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
     const command = this.subcommandMap.get(index);
     if (!command) {
       throw new UnimplementedError(`Failed to find a subcommand for command ${index}`);
@@ -294,10 +257,7 @@ class ParentSlashCommand extends SlashCommand {
     await command.execute({ interaction, client: interaction.client });
   }
 
-  public async autocomplete(
-    idx: AutocompleteIndex,
-    interaction: AutocompleteInteraction<'cached'>,
-  ): Promise<void> {
+  public async autocomplete(idx: AutocompleteIndex, interaction: AutocompleteInteraction<'cached'>): Promise<void> {
     const autocomplete = this.autocompleteMap.get(idx);
     if (!autocomplete) {
       throw new UnimplementedError(`Autocomplete not implemented: ${idx}`);
@@ -360,8 +320,7 @@ export const command = {
   }): SlashCommand => {
     const predicate = args.predicate ?? null;
 
-    const deploymentMode =
-      args.deploymentMode ?? (args.developmentOnly ? Deploy.LocalOnly : null) ?? Deploy.Global;
+    const deploymentMode = args.deploymentMode ?? (args.developmentOnly ? Deploy.LocalOnly : null) ?? Deploy.Global;
 
     const autocompleteMap: AutocompleteMap<AutocompleteFunction> = new SerializableMap();
     for (const name in args.autocomplete) {
@@ -383,8 +342,7 @@ export const command = {
     developmentOnly?: boolean;
     deploymentMode?: DeploymentMode;
   }): SlashCommand => {
-    const deploymentMode =
-      args.deploymentMode ?? (args.developmentOnly ? Deploy.LocalOnly : null) ?? Deploy.Global;
+    const deploymentMode = args.deploymentMode ?? (args.developmentOnly ? Deploy.LocalOnly : null) ?? Deploy.Global;
 
     const predicate = args.predicate ?? null;
     const components = { subcommands: args.subcommands ?? [], groups: args.groups ?? [] };
@@ -440,10 +398,7 @@ export class ContextCommand extends Command {
     return this.evaluatePredicate(this.predicate, user);
   }
 
-  public async execute(
-    _idx: CommandIndex,
-    interaction: ContextMenuCommandInteraction<'cached'>,
-  ): Promise<void> {
+  public async execute(_idx: CommandIndex, interaction: ContextMenuCommandInteraction<'cached'>): Promise<void> {
     await this.executeFn({ interaction, client: interaction.client });
   }
 }
@@ -456,12 +411,7 @@ function contextConstructor(type: ApplicationCommandType.User | ApplicationComma
     deploymentMode?: DeploymentMode;
   }) => {
     const predicate = args.predicate ?? null;
-    return new ContextCommand(
-      { ...args.data, type },
-      predicate,
-      args.deploymentMode ?? Deploy.Global,
-      args.execute,
-    );
+    return new ContextCommand({ ...args.data, type }, predicate, args.deploymentMode ?? Deploy.Global, args.execute);
   };
 }
 

@@ -4,14 +4,7 @@ import { getGuildModel } from '../models/guild/guildModel.js';
 import skip from '../skip.js';
 import statFlushCache from '../statFlushCache.js';
 import noXpUtil from '../util/noXpUtil.js';
-import type {
-  Guild,
-  Client,
-  VoiceBasedChannel,
-  Collection,
-  GuildMember,
-  GuildBasedChannel,
-} from 'discord.js';
+import type { Guild, Client, VoiceBasedChannel, Collection, GuildMember, GuildBasedChannel } from 'discord.js';
 
 let minutesToAdd = 0,
   leftover = 0,
@@ -39,9 +32,7 @@ export default async (client: Client) => {
 
   if (round % 5 == 0)
     client.logger.debug(
-      `[Rank Voice] #${round.toString().padEnd(4)}: ${minutesToAdd} (${leftover
-        .toString()
-        .padEnd(2)})`,
+      `[Rank Voice] #${round.toString().padEnd(4)}: ${minutesToAdd} (${leftover.toString().padEnd(2)})`,
     );
 
   round++;
@@ -53,15 +44,10 @@ const rankVoiceGuild = async (guild: Guild) => {
 
   if (!cachedGuild.db.voiceXp) return;
 
-  const voiceChannels = guild.channels.cache.filter((channel): channel is VoiceBasedChannel =>
-    channel.isVoiceBased(),
-  );
+  const voiceChannels = guild.channels.cache.filter((channel): channel is VoiceBasedChannel => channel.isVoiceBased());
 
   for (const channel of voiceChannels.values()) {
-    if (
-      (await givesXp(channel)) &&
-      (cachedGuild.db.allowSoloXp || existMultipleMembers(channel.members))
-    )
+    if ((await givesXp(channel)) && (cachedGuild.db.allowSoloXp || existMultipleMembers(channel.members)))
       await rankVoiceChannel(channel);
   }
 };

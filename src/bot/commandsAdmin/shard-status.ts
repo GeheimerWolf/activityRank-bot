@@ -101,9 +101,7 @@ export default command.basic({
       await interaction.editReply({
         content:
           `Shard ID of guild \`${guildSearch}\`: \`${shardId}\`\n\n` +
-          (found
-            ? `Shard ${found.shardId}:\n${parseShardInfoContent(found)}`
-            : '🔴 Could not find shard'),
+          (found ? `Shard ${found.shardId}:\n${parseShardInfoContent(found)}` : '🔴 Could not find shard'),
         files,
       });
       return;
@@ -119,15 +117,13 @@ export default command.basic({
 
     const page = interaction.options.getInteger('page') ?? 0;
 
-    const e = new EmbedBuilder()
-      .setTitle(`Shards ${page * 15} - ${(page + 1) * 15} (total ${data.length})`)
-      .setFields(
-        data.slice(page * 15, (page + 1) * 15).map((shard) => ({
-          name: shard.shardId.toString(),
-          value: parseShardInfoContent(shard),
-          inline: true,
-        })),
-      );
+    const e = new EmbedBuilder().setTitle(`Shards ${page * 15} - ${(page + 1) * 15} (total ${data.length})`).setFields(
+      data.slice(page * 15, (page + 1) * 15).map((shard) => ({
+        name: shard.shardId.toString(),
+        value: parseShardInfoContent(shard),
+        inline: true,
+      })),
+    );
 
     await interaction.editReply({ embeds: [e], files });
   },

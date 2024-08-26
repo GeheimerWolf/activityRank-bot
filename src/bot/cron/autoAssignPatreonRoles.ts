@@ -16,8 +16,7 @@ export default async (supportGuild: Guild) => {
 
     for (const patreonRole of config.supportServer.patreonRoles) {
       // Remove role, if user has role but no active tier was found
-      if (!myUser && member.roles.cache.has(patreonRole.id))
-        await member.roles.remove(patreonRole.id);
+      if (!myUser && member.roles.cache.has(patreonRole.id)) await member.roles.remove(patreonRole.id);
 
       if (!myUser) continue;
 

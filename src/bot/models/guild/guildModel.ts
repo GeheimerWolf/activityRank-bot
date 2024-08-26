@@ -90,8 +90,7 @@ export class GuildModel extends CachedModel<Guild, GuildSchema, typeof cachedFie
 }
 
 export async function getGuildModel(guild: Guild): Promise<GuildModel> {
-  if (guildCache.has(guild)) return guildCache.get(guild)!;
-  else return await buildCache(guild);
+  return guildCache.get(guild) ?? (await buildCache(guild));
 }
 
 async function buildCache(guild: Guild): Promise<GuildModel> {
@@ -127,7 +126,7 @@ const getDbHost = async (guildId: string): Promise<string> => {
   const getRoute = db
     .selectFrom('guildRoute')
     .leftJoin('dbShard', 'guildRoute.dbShardId', 'dbShard.id')
-    .select(`host`)
+    .select('host')
     .where('guildId', '=', guildId);
 
   let res = await getRoute.executeTakeFirst();

@@ -48,7 +48,8 @@ export async function queryAllHosts<T>(sql: string): Promise<T[]> {
 }
 
 function getShardInstance(host: string) {
-  if (instances.has(host)) return instances.get(host)!;
+  const existing = instances.get(host);
+  if (existing) return existing;
 
   const pool = createPool({
     host: host,

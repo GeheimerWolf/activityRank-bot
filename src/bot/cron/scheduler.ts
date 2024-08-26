@@ -37,6 +37,7 @@ export const start = (client: Client) => {
       const attrs = {
         presenceStatus: client.options.presence?.status,
         wsStatus: client.ws.status,
+        // biome-ignore lint/complexity/useLiteralKeys: Accessing private property
         wsDestroyed: client.ws['destroyed'],
         remainingRequests: client.rest.globalRemaining,
         cachedGuilds: client.guilds.cache.size,

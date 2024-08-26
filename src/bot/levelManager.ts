@@ -19,7 +19,7 @@ export async function checkLevelUp(member: GuildMember, oldTotalScore: number, n
 
   // member.client.logger.debug({ oldLevel, newLevel }, 'checking levelup levels');
 
-  if (oldLevel != newLevel) {
+  if (oldLevel !== newLevel) {
     const roleMessages = await checkRoleAssignment(member, newLevel);
     await sendGratulationMessage(member, roleMessages, newLevel).catch((e) =>
       member.client.logger.warn(e, 'Sending error while autoposting levelup message'),
@@ -40,7 +40,7 @@ export async function checkRoleAssignment(member: GuildMember, level: number) {
   const roleMessages: string[] = [];
   const roles = member.guild.roles.cache;
 
-  if (roles.size == 0 || !member.guild.members.me!.permissions.has(PermissionFlagsBits.ManageRoles))
+  if (roles.size === 0 || !member.guild.members.me?.permissions.has(PermissionFlagsBits.ManageRoles))
     return roleMessages;
 
   const cachedGuild = await getGuildModel(member.guild);
@@ -54,12 +54,12 @@ export async function checkRoleAssignment(member: GuildMember, level: number) {
     const cachedRole = await guildRoleModel.cache.get(role);
     //member.client.logger.debug({ cachedRole, role }, 'processing role');
 
-    if (cachedRole.db.assignLevel == 0 && cachedRole.db.deassignLevel == 0) continue;
-    if (role.comparePositionTo(member.guild.members.me!.roles.highest) > 0) continue;
+    if (cachedRole.db.assignLevel === 0 && cachedRole.db.deassignLevel === 0) continue;
+    if (role.comparePositionTo(member.guild.members.me?.roles.highest) > 0) continue;
 
     const memberHasRole = member.roles.cache.has(role.id);
 
-    if (cachedRole.db.deassignLevel != 0 && level >= cachedRole.db.deassignLevel) {
+    if (cachedRole.db.deassignLevel !== 0 && level >= cachedRole.db.deassignLevel) {
       // User is above role. Deassign or do nothing.
       if (memberHasRole) {
         await member.roles.remove(role).catch((e) => {
@@ -67,7 +67,7 @@ export async function checkRoleAssignment(member: GuildMember, level: number) {
         });
         await addRoleDeassignMessage(roleMessages, member, role);
       }
-    } else if (cachedRole.db.assignLevel != 0 && level >= cachedRole.db.assignLevel) {
+    } else if (cachedRole.db.assignLevel !== 0 && level >= cachedRole.db.assignLevel) {
       // User is within role. Assign or do nothing.
 
       if (role.permissions.any(DANGEROUS_PERMISSIONS)) {

@@ -8,10 +8,14 @@ import type { XpFlushCache } from 'bot/xpFlushCache.js';
 
 export default async function (manager: ShardingManager) {
   const shardCaches = (await manager.fetchClientValues('statFlushCache')) as Record<string, StatFlushCache>[];
-  manager.broadcastEval((client) => (client.statFlushCache = {}));
+  manager.broadcastEval((client) => {
+    client.statFlushCache = {};
+  });
 
   const xpCaches = (await manager.fetchClientValues('xpFlushCache')) as Record<string, XpFlushCache>[];
-  manager.broadcastEval((client) => (client.xpFlushCache = {}));
+  manager.broadcastEval((client) => {
+    client.xpFlushCache = {};
+  });
 
   await runStatFlush(shardCaches);
   await runXpFlush(xpCaches);
@@ -31,8 +35,9 @@ async function runStatFlush(caches: Record<string, StatFlushCache>[]) {
       const count = Object.keys(statFlushCache[dbHost][type]).length;
       if (count < 1) continue;
 
-      promises.push(shardDb.query(dbHost, getSql(type, statFlushCache[dbHost][type])!));
-      counts[type] ? (counts[type]! += count) : (counts[type] = count);
+      promises.push(shardDb.query(dbHost, getSql(type, statFlushCache[dbHost][type])));
+      if (counts[type] !== undefined) counts[type] += count;
+      else counts[type] = count;
     }
   }
 
@@ -106,10 +111,10 @@ const getSql = <T extends StatType>(
     ? Record<string, StatFlushCacheChannelEntry>
     : Record<string, StatFlushCacheGuildEntry>,
 ) => {
-  const sqls = [],
-    now = Math.floor(new Date().getTime() / 1000);
+  const sqls = [];
+  const now = Math.floor(new Date().getTime() / 1000);
 
-  if (type == 'textMessage' || type == 'voiceMinute') {
+  if (type === 'textMessage' || type === 'voiceMinute') {
     for (const entry in entries)
       sqls.push(`(${entries[entry].guildId},${entries[entry].userId},${
         (entries[entry] as StatFlushCacheChannelEntry).channelId
@@ -133,7 +138,8 @@ const getSql = <T extends StatType>(
         day = LEAST(${maxValue},day + VALUES(day)),
         changeDate = VALUES(changeDate);
     `;
-  } else if (type == 'invite' || type == 'vote' || type == 'bonus') {
+  }
+  if (type === 'invite' || type === 'vote' || type === 'bonus') {
     for (const entry in entries)
       sqls.push(`(${entries[entry].guildId},${entries[entry].userId},
           LEAST(${maxValue},${entries[entry].count}),LEAST(${maxValue},${entries[entry].count}),LEAST(${maxValue},${entries[entry].count}),
@@ -152,14 +158,12 @@ const getSql = <T extends StatType>(
         day = LEAST(${maxValue},day + VALUES(day)),
         changeDate = VALUES(changeDate);
     `;
-  } else {
-    throw new Error(`Invalid xp type "${type}" provided`);
   }
+  throw new Error(`Invalid xp type "${type}" provided`);
 };
 
 const getXpSql = (entries: XpFlushCache) => {
-  const sqls = [],
-    now = Math.floor(new Date().getTime() / 1000);
+  const sqls = [];
 
   const least = (s: string | number) => `LEAST(${maxValue},${s})`;
 

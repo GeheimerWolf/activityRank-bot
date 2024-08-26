@@ -6,9 +6,9 @@ import statFlushCache from '../statFlushCache.js';
 import noXpUtil from '../util/noXpUtil.js';
 import type { Guild, Client, VoiceBasedChannel, Collection, GuildMember, GuildBasedChannel } from 'discord.js';
 
-let minutesToAdd = 0,
-  leftover = 0,
-  round = 0;
+let minutesToAdd = 0;
+let leftover = 0;
+let round = 0;
 
 export default async (client: Client) => {
   const roundStart = Date.now() / 1000;
@@ -30,7 +30,7 @@ export default async (client: Client) => {
   minutesToAdd = Math.floor(secondsToAdd / 60);
   leftover = Math.round(secondsToAdd % 60);
 
-  if (round % 5 == 0)
+  if (round % 5 === 0)
     client.logger.debug(
       `[Rank Voice] #${round.toString().padEnd(4)}: ${minutesToAdd} (${leftover.toString().padEnd(2)})`,
     );

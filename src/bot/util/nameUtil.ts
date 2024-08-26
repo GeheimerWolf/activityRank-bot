@@ -15,35 +15,35 @@ export const getChannelName = (channels: Collection<string, GuildBasedChannel>, 
   const channel = channels.get(channelId);
 
   if (channel) return cutName(channel.name);
-  else return 'Deleted [' + channelId + ']';
+  return `Deleted [${channelId}]`;
 };
 
 export const getChannelMention = (channels: Collection<string, Channel>, channelId: string) => {
   const channel = channels.get(channelId);
 
   if (channel) return channel.toString();
-  else return `Deleted [${channelId}]`;
+  return `Deleted [${channelId}]`;
 };
 
 export const getChannelType = (channels: Collection<string, Channel>, channelId: string) => {
   const channel = channels.get(channelId);
 
   if (channel) return channel.type;
-  else return null;
+  return null;
 };
 
 export const getRoleName = (roles: Collection<string, Role>, roleId: string) => {
   const role = roles.get(roleId);
 
   if (role) return cutName(role.name);
-  else return 'Deleted [' + roleId + ']\n';
+  return `Deleted [${roleId}]\n`;
 };
 
 export const getRoleMention = (roles: Collection<string, Role>, roleId: string) => {
   const role = roles.get(roleId);
 
   if (role) return role.toString();
-  else return `Deleted [${roleId}]`;
+  return `Deleted [${roleId}]`;
 };
 
 export const getChannelTypeIcon = (channels: Collection<string, Channel>, channelId: string) => {
@@ -129,33 +129,19 @@ export const getGuildMemberNamesWithRanks = async (
 };
 
 // @ts-ignore deprecated function is kept intact
-export const addGuildMemberNamesToRanks = deprecate((guild, memberRanks) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let userIds = [],
-        memberRank;
-      for (memberRank of memberRanks) userIds.push(memberRank.userId);
-      const memberInfos = await getGuildMemberInfos(guild, userIds);
+export const addGuildMemberNamesToRanks = deprecate(async (guild, memberRanks) => {
+  const userIds = [];
+  for (const memberRank of memberRanks) userIds.push(memberRank.userId);
+  const memberInfos = await getGuildMemberInfos(guild, userIds);
 
-      for (memberRank of memberRanks) memberRank.name = memberInfos[memberRank.userId].name;
-
-      // @ts-ignore deprecated function is kept intact
-      resolve();
-    } catch (e) {
-      return reject(e);
-    }
-  });
+  for (const memberRank of memberRanks) memberRank.name = memberInfos[memberRank.userId].name;
 }, "addGuildMemberNamesToRanks() is deprecated due to TypeScript's inability to change variable types. Use getGuildMemberNamesWithRanks() instead.");
 
 // TODO consider checking if displayNames are appropriate in this function
 export const getGuildMemberAlias = (member: GuildMember, showNicknames: boolean) =>
   cutName(showNicknames && member.nickname ? member.nickname : member.user.username);
 
-export const cutName = (name: string) => {
-  if (name.length > 32) name = name.slice(0, 30) + '..';
-
-  return name;
-};
+export const cutName = (name: string) => (name.length <= 32 ? name : `${name.slice(0, 30)}..`);
 
 export default {
   getChannelName,

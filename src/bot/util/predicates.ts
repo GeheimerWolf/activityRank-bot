@@ -13,7 +13,8 @@ function userHasPrivilege(user: User, privilege: PrivilegeLevel): Predicate {
 async function INVALID_CALLBACK(interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction) {
   interaction.client.logger.warn({ interaction }, 'Unauthorised attempt to access privileged command');
   await interaction.reply({
-    content: `Sorry! This command is only accessible to ActivityRank staff. [This incident will be reported.](https://xkcd.com/838)`,
+    content:
+      'Sorry! This command is only accessible to ActivityRank staff. [This incident will be reported.](https://xkcd.com/838)',
   });
 }
 

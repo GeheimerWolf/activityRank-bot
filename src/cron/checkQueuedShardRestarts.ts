@@ -3,11 +3,11 @@ import logger from '../util/logger.js';
 import type { ShardingManager } from 'discord.js';
 
 export default async (manager: ShardingManager) => {
-  const res = await managerDb.query<{ shardId: number }[]>(`SELECT shardId from botShardStat WHERE restartQueued = 1`);
+  const res = await managerDb.query<{ shardId: number }[]>('SELECT shardId from botShardStat WHERE restartQueued = 1');
 
   const shardIdsToRestart: number[] = [];
   for (const row of res) {
-    const shard = manager.shards.find((shard) => shard.id == row.shardId);
+    const shard = manager.shards.find((shard) => shard.id === row.shardId);
     if (shard) shardIdsToRestart.push(row.shardId);
   }
 
@@ -18,7 +18,7 @@ export default async (manager: ShardingManager) => {
         WHERE shardId IN (${shardIdsToRestart.join(',')}) `);
 
   for (const shardId of shardIdsToRestart) {
-    const shard = manager.shards.find((shard) => shard.id == shardId);
+    const shard = manager.shards.find((shard) => shard.id === shardId);
     if (shard) await shard.respawn();
   }
 };

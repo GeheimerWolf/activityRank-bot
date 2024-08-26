@@ -55,8 +55,8 @@ export const checkStatCommandsCooldown = async (interaction: ChatInputCommandInt
   const { userTier, ownerTier } = await fct.getPatreonTiers(interaction);
 
   let cd = Time.Minute * 3;
-  if (userTier == 1) cd = Time.Minute / 2;
-  if (userTier == 2 || ownerTier == 2) cd = Time.Second * 5;
+  if (userTier === 1) cd = Time.Minute / 2;
+  if (userTier === 2 || ownerTier === 2) cd = Time.Second * 5;
   if (ownerTier === 3 || userTier === 3) cd = Time.Second; // TODO: remove; deprecated tier
 
   const cachedMember = await getMemberModel(interaction.member);
@@ -89,11 +89,11 @@ export const checkResetServerCommandCooldown = async (interaction: ChatInputComm
   const { userTier, ownerTier } = await fct.getPatreonTiers(interaction);
 
   let cd = Time.Hour / 2;
-  if (userTier == 1) cd = Time.Minute * 10;
-  if (ownerTier == 3) cd = Time.Minute * 5;
-  if (userTier == 2 || userTier == 3) cd = Time.Minute * 2;
+  if (userTier === 1) cd = Time.Minute * 10;
+  if (ownerTier === 3) cd = Time.Minute * 5;
+  if (userTier === 2 || userTier === 3) cd = Time.Minute * 2;
 
-  const premiumLowersCooldownString = userTier == 2 || userTier == 3 ? '' : premiumLowersCooldownMessage;
+  const premiumLowersCooldownString = userTier === 2 || userTier === 3 ? '' : premiumLowersCooldownMessage;
 
   const cachedGuild = await getGuildModel(interaction.guild);
 

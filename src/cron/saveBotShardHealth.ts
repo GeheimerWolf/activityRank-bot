@@ -1,12 +1,13 @@
 import { publicIpv4 } from 'public-ip';
 import managerDb from '../models/managerDb/managerDb.js';
-import { escape } from 'mysql2/promise';
+import { escape as escapeSql } from 'mysql2/promise';
 import type { Client, ShardingManager } from 'discord.js';
 
 function _save(client: Client) {
+  if (!client.shard) throw new Error('Unsharded client');
   const obj = {
-    shardId: client.shard!.ids[0],
-    uptimeSeconds: Math.floor(client.uptime! / 1000),
+    shardId: client.shard.ids[0],
+    uptimeSeconds: Math.floor((client.uptime ?? 0) / 1000),
     readyDate: client.readyTimestamp,
     serverCount: client.guilds.cache.size,
     status: client.ws.status,
@@ -28,7 +29,7 @@ export default async (manager: ShardingManager) => {
     ...shard,
     ip,
     changedHealthDate: nowDate,
-    readyDate: Math.round(new Date(shard.readyDate!).getTime() / 1000),
+    readyDate: Math.round(new Date(shard.readyDate ?? 0).getTime() / 1000),
     shardId: process.env.NODE_ENV === 'production' ? shard.shardId : shard.shardId + 1000000,
   }));
 
@@ -46,7 +47,7 @@ export default async (manager: ShardingManager) => {
 
   const updateSqls = keys.map((k) => `${k}=VALUES(${k})`);
 
-  const valueSqls = dataShards.map((s) => `(${keys.map((k) => escape(s[k])).join(',')})`);
+  const valueSqls = dataShards.map((s) => `(${keys.map((k) => escapeSql(s[k])).join(',')})`);
 
   await managerDb.query(`INSERT INTO botShardStat (${keys.join(',')})
     VALUES ${valueSqls.join(',')} ON DUPLICATE KEY UPDATE ${updateSqls.join(',')}`);

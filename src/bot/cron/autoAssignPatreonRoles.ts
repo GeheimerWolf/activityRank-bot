@@ -12,7 +12,7 @@ export default async (supportGuild: Guild) => {
 
   for (const _member of members) {
     const member = _member[1];
-    const myUser = myUsers.find((u) => u.userId == member.user.id);
+    const myUser = myUsers.find((u) => u.userId === member.user.id);
 
     for (const patreonRole of config.supportServer.patreonRoles) {
       // Remove role, if user has role but no active tier was found
@@ -21,11 +21,11 @@ export default async (supportGuild: Guild) => {
       if (!myUser) continue;
 
       // Remove role, if role does not match tier
-      if (member.roles.cache.has(patreonRole.id) && myUser.patreonTier != patreonRole.tier)
+      if (member.roles.cache.has(patreonRole.id) && myUser.patreonTier !== patreonRole.tier)
         await member.roles.remove(patreonRole.id);
 
       // Add role, if user has active tier and role matches the tier
-      if (!member.roles.cache.has(patreonRole.id) && myUser.patreonTier == patreonRole.tier)
+      if (!member.roles.cache.has(patreonRole.id) && myUser.patreonTier === patreonRole.tier)
         await member.roles.add(patreonRole.id);
     }
   }

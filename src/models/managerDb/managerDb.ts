@@ -29,7 +29,7 @@ export async function getConnection() {
 
 export async function getAllDbHosts() {
   const db = getManagerDb();
-  const res = await db.selectFrom('dbShard').select(`host`).execute();
+  const res = await db.selectFrom('dbShard').select('host').execute();
 
   return res.map((r) => r.host);
 }
@@ -63,7 +63,7 @@ export async function managerFetch<T>(route: string, init: RequestInit) {
 }
 
 /** @deprecated Prefer managerFetch() instead */
-export async function mgrFetch<T>(body: any, route: string, method: string) {
+export async function mgrFetch<T>(body: unknown, route: string, method: string): Promise<T> {
   try {
     const requestObject: RequestInit = {
       method: method,
@@ -75,7 +75,9 @@ export async function mgrFetch<T>(body: any, route: string, method: string) {
 
     if (body !== null) requestObject.body = JSON.stringify(body);
 
-    const fetchURL = 'http://' + keys.managerHost + (keys.managerPort ? `:${keys.managerPort}` : '') + route;
+    const port = keys.managerPort ? `:${keys.managerPort}` : '';
+
+    const fetchURL = `http://${keys.managerHost}${port}${route}`;
 
     const res = await fetch(fetchURL, requestObject);
 

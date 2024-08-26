@@ -12,5 +12,11 @@
       "fileMatch": ["config/config.json"],
       "url": "./config/config.schema.json"
     }
-  ]
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

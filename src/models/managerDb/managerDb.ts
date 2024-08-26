@@ -47,7 +47,7 @@ function getManagerPool() {
   return pool;
 }
 
-export async function managerFetch<T extends any>(route: string, init: RequestInit) {
+export async function managerFetch<T>(route: string, init: RequestInit) {
   try {
     const port = keys.managerPort ? `:${keys.managerPort}` : '';
     const url = new URL(`http://${keys.managerHost}${port}/${route}`);
@@ -63,7 +63,7 @@ export async function managerFetch<T extends any>(route: string, init: RequestIn
 }
 
 /** @deprecated Prefer managerFetch() instead */
-export async function mgrFetch<T extends any>(body: any, route: string, method: string) {
+export async function mgrFetch<T>(body: any, route: string, method: string) {
   try {
     const requestObject: RequestInit = {
       method: method,

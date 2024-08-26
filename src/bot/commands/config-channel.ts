@@ -131,7 +131,7 @@ const generateRow = (
   r[0].setStyle(myChannel.noXp ? ButtonStyle.Success : ButtonStyle.Danger);
 
   r[1].setCustomId(getButton('noCommand'));
-  r[1].setDisabled(Boolean(parseInt(myGuild.db.commandOnlyChannel)));
+  r[1].setDisabled(Boolean(Number.parseInt(myGuild.db.commandOnlyChannel)));
   r[1].setStyle(myChannel.noCommand ? ButtonStyle.Success : ButtonStyle.Danger);
   // r[1].setDisabled(type !== ChannelType.GuildText);
   // if (r[1].disabled) r[1].setStyle(ButtonStyle.Secondary);

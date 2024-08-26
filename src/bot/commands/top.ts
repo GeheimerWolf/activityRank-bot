@@ -1,4 +1,4 @@
-import { GuildModel, getGuildModel } from '../models/guild/guildModel.js';
+import { type GuildModel, getGuildModel } from '../models/guild/guildModel.js';
 import {
   getChannelMemberRanks,
   getChannelRanks,
@@ -293,7 +293,7 @@ async function generateChannelMembers(
 
   const embed: APIEmbed = { title, color: 0x4fd6c8 };
 
-  const bonusUntil = new Date(parseInt(cachedGuild.db.bonusUntilDate) * 1000);
+  const bonusUntil = new Date(Number.parseInt(cachedGuild.db.bonusUntilDate) * 1000);
 
   if (bonusUntil.getTime() > Date.now()) {
     embed.description = `**!! Bonus XP ends ${time(bonusUntil, 'R')} !!**\n`;
@@ -361,7 +361,7 @@ async function generateGuildMembers(
 
   const embed: APIEmbed = { title, color: 0x4fd6c8 };
 
-  const bonusUntil = new Date(parseInt(cachedGuild.db.bonusUntilDate) * 1000);
+  const bonusUntil = new Date(Number.parseInt(cachedGuild.db.bonusUntilDate) * 1000);
 
   if (bonusUntil.getTime() > Date.now()) {
     embed.description = `**!! Bonus XP ends ${time(bonusUntil, 'R')} !!**\n`;

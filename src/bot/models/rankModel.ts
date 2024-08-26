@@ -5,13 +5,13 @@ import type { StatTimeInterval, StatType } from 'models/types/enums.js';
 import { getGuildModel, type GuildModel } from './guild/guildModel.js';
 
 // Toplist
-export const getGuildMemberRanks = async function <T extends StatTimeInterval>(
+export const getGuildMemberRanks = async <T extends StatTimeInterval>(
   guild: Guild,
   type: StatType | 'totalScore',
   time: T,
   from: number,
   to: number,
-) {
+) => {
   const cachedGuild = await getGuildModel(guild);
 
   const memberRanksSql = `
@@ -32,7 +32,7 @@ export const getGuildMemberRanks = async function <T extends StatTimeInterval>(
 };
 
 // All scores for one member
-export const getGuildMemberRank = async function (guild: Guild, userId: string) {
+export const getGuildMemberRank = async (guild: Guild, userId: string) => {
   const cachedGuild = await getGuildModel(guild);
 
   const res = await shardDb.query<
@@ -48,11 +48,11 @@ export const getGuildMemberRank = async function (guild: Guild, userId: string) 
 };
 
 // Positions of one type of one member within a guild
-export const getGuildMemberRankPosition = async function (
+export const getGuildMemberRankPosition = async (
   guild: Guild,
   userId: string,
   typeTime: string,
-) {
+) => {
   const cachedGuild = await getGuildModel(guild);
 
   const res = await shardDb.query<{ count: number }[]>(
@@ -68,13 +68,13 @@ export const getGuildMemberRankPosition = async function (
 };
 
 // Most active channels within a guild
-export const getChannelRanks = async function <T extends StatTimeInterval>(
+export const getChannelRanks = async <T extends StatTimeInterval>(
   guild: Guild,
   type: 'voiceMinute' | 'textMessage',
   time: T,
   from: number,
   to: number,
-) {
+) => {
   const { dbHost } = await getGuildModel(guild);
 
   const ranks = await shardDb.query<({ channelId: string } & Record<T, number>)[]>(
@@ -109,14 +109,14 @@ export const getChannelMemberRanks = async <T extends StatTimeInterval>(
 };
 
 // Most active channels of a certain member
-export const getGuildMemberTopChannels = async function <T extends StatTimeInterval>(
+export const getGuildMemberTopChannels = async <T extends StatTimeInterval>(
   guild: Guild,
   userId: string,
   type: StatType,
   time: T,
   from: number,
   to: number,
-) {
+) => {
   const { dbHost } = await getGuildModel(guild);
 
   const res = await shardDb.query<({ channelId: string } & Record<T, number>)[]>(
@@ -132,7 +132,7 @@ export const getGuildMemberTopChannels = async function <T extends StatTimeInter
   return res;
 };
 
-export const countGuildRanks = async function (guild: Guild) {
+export const countGuildRanks = async (guild: Guild) => {
   const cachedGuild = await getGuildModel(guild);
 
   const res = await shardDb.query<{ count: number }[]>(
@@ -142,7 +142,7 @@ export const countGuildRanks = async function (guild: Guild) {
   return res[0].count;
 };
 
-export const getGuildMemberTotalScore = async function (guild: Guild, userId: string) {
+export const getGuildMemberTotalScore = async (guild: Guild, userId: string) => {
   const cachedGuild = await getGuildModel(guild);
 
   const res = await shardDb.query<{ totalScoreAlltime: string }[]>(

@@ -21,7 +21,7 @@ export interface CachedGuildChannel {
 export const channelCache = new WeakMap<GuildBasedChannel, CachedGuildChannel>();
 
 export const cache = {
-  get: async function (channel: GuildBasedChannel): Promise<CachedGuildChannel> {
+  get: async (channel: GuildBasedChannel): Promise<CachedGuildChannel> => {
     if (channelCache.has(channel)) return channelCache.get(channel)!;
     return await buildCache(channel);
   },
@@ -86,8 +86,8 @@ export const getRankedChannelIds = async (guild: Guild) => {
 
   const ids = [...new Set([...textmessageUserIds, ...voiceMinuteUserIds])];
 
-  let channelIds = [];
-  for (let id of ids) {
+  const channelIds = [];
+  for (const id of ids) {
     channelIds.push(id.channelId);
   }
 
@@ -116,7 +116,7 @@ export const getNoCommandChannelIds = async (guild: Guild) => {
 
 async function buildCache(channel: GuildBasedChannel): Promise<CachedGuildChannel> {
   const { dbHost } = await getGuildModel(channel.guild);
-  let foundCache = await shardDb.query<CachedDbFields[]>(
+  const foundCache = await shardDb.query<CachedDbFields[]>(
     dbHost,
     `SELECT ${cachedFields.join(',')} FROM guildChannel WHERE guildId = ${
       channel.guild.id

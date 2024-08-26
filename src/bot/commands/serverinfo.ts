@@ -38,7 +38,7 @@ async function render(
     | StringSelectMenuInteraction<'cached'>,
   pageNumber: number,
   windowName: WindowName,
-  disableComponents: boolean = false,
+  disableComponents = false,
 ) {
   const window = windows[windowName];
   const cachedGuild = await getGuildModel(interaction.guild);
@@ -222,7 +222,7 @@ const general: Window = {
       .join('\n');
 
     let bonusTimeString = '';
-    if (parseInt(cachedGuild.db.bonusUntilDate) > Date.now() / 1000) {
+    if (Number.parseInt(cachedGuild.db.bonusUntilDate) > Date.now() / 1000) {
       bonusTimeString = `\n\n**!! Bonus XP Active !!** (ends <t:${cachedGuild.db.bonusUntilDate}:R>)
     ${cachedGuild.db.bonusPerTextMessage * cachedGuild.db.xpPerBonus} Bonus XP per textmessage
     ${cachedGuild.db.bonusPerVoiceMinute * cachedGuild.db.xpPerBonus} Bonus XP per voiceminute
@@ -319,8 +319,7 @@ const roles: Window = {
     const relevantLevels = [
       ...new Set(
         roleAssignments
-          .map((a) => [a.assignLevel, a.deassignLevel])
-          .flat()
+          .flatMap((a) => [a.assignLevel, a.deassignLevel])
           .filter((level) => level !== 0),
       ),
     ].sort((a, b) => a - b);

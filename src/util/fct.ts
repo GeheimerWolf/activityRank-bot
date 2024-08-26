@@ -72,12 +72,12 @@ export const getPatreonTiers = async (interaction: Interaction<'cached'>) => {
   const myOwnerUser = await ownerModel.fetch();
 
   let userTier;
-  if (Date.now() / 1000 <= parseInt(myUser.patreonTierUntilDate)) {
+  if (Date.now() / 1000 <= Number.parseInt(myUser.patreonTierUntilDate)) {
     userTier = myUser.patreonTier;
   } else userTier = 0;
 
   let ownerTier;
-  if (Date.now() / 1000 <= parseInt(myOwnerUser.patreonTierUntilDate)) {
+  if (Date.now() / 1000 <= Number.parseInt(myOwnerUser.patreonTierUntilDate)) {
     ownerTier = myOwnerUser.patreonTier;
   } else ownerTier = 0;
 
@@ -92,9 +92,9 @@ export const getVoteMultiplier = (myUser: {
 }) => {
   let multiplier = 1;
 
-  if (parseInt(myUser.lastTopggUpvoteDate) + 259200 > Date.now() / 1000) multiplier = 2;
+  if (Number.parseInt(myUser.lastTopggUpvoteDate) + 259200 > Date.now() / 1000) multiplier = 2;
 
-  if (parseInt(myUser.patreonTierUntilDate) > Date.now() / 1000 && myUser.patreonTier > 0) {
+  if (Number.parseInt(myUser.patreonTierUntilDate) > Date.now() / 1000 && myUser.patreonTier > 0) {
     if (myUser.patreonTier == 1) multiplier = 2;
     else if (myUser.patreonTier == 2) multiplier = 3;
     else if (myUser.patreonTier == 3) multiplier = 4; // TODO remove: deprecated Patreon tier

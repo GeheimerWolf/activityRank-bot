@@ -8,7 +8,7 @@ export default async (manager: ShardingManager) => {
   );
 
   const shardIdsToRestart: number[] = [];
-  for (let row of res) {
+  for (const row of res) {
     const shard = manager.shards.find((shard) => shard.id == row.shardId);
     if (shard) shardIdsToRestart.push(row.shardId);
   }
@@ -23,7 +23,7 @@ export default async (manager: ShardingManager) => {
     await managerDb.query(`UPDATE botShardStat SET restartQueued = 0 
         WHERE shardId IN (${shardIdsToRestart.join(',')}) `);
 
-  for (let shardId of shardIdsToRestart) {
+  for (const shardId of shardIdsToRestart) {
     const shard = manager.shards.find((shard) => shard.id == shardId);
     if (shard) await shard.respawn();
   }

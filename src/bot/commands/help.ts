@@ -1,5 +1,4 @@
 import {
-  SlashCommandBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
   EmbedBuilder,
@@ -76,7 +75,9 @@ const close = component({
 });
 
 function helpMainEmbed(sections: TextsCommands) {
-  const embed = new EmbedBuilder().setAuthor({ name: 'ActivityRank Manual' }).setColor(0x00ae86)
+  const embed = new EmbedBuilder()
+    .setAuthor({ name: 'ActivityRank Manual' })
+    .setColor(0x00ae86)
     .setDescription(stripIndent`
       *v${version}*
       **[Website](https://activityrank.me/commands)**

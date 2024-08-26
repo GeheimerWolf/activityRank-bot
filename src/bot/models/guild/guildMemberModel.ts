@@ -140,7 +140,7 @@ async function buildCache(member: GuildMember): Promise<GuildMemberModel> {
   const cache = foundCache ?? { ...(await loadDefaultCache(dbHost)) };
 
   const built = new GuildMemberModel(member, dbHost, cache, {
-    totalXp: parseInt(await getGuildMemberTotalScore(member.guild, member.id)),
+    totalXp: Number.parseInt(await getGuildMemberTotalScore(member.guild, member.id)),
   });
 
   memberCache.set(member, built);

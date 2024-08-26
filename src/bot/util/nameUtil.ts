@@ -136,7 +136,7 @@ export const getGuildMemberNamesWithRanks = async (
 
 // @ts-ignore deprecated function is kept intact
 export const addGuildMemberNamesToRanks = deprecate((guild, memberRanks) => {
-  return new Promise(async function (resolve, reject) {
+  return new Promise(async (resolve, reject) => {
     try {
       let userIds = [],
         memberRank;

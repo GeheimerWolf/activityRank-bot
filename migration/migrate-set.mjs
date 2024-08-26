@@ -26,7 +26,7 @@ async function main() {
   let highestId = 0n;
   let guildCount = 0;
   let rowCount = 0n;
-  let lastTime = Date.now();
+  const lastTime = Date.now();
 
   /** @type (i: any, pad: number) => string */
   const pad = (i, pad) => i.toString().padStart(pad);

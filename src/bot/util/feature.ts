@@ -1,6 +1,6 @@
 export enum Feature {
   /** @deprecated enabled by default */
-  XPFlush,
+  XPFlush = 0,
 }
 
 const BETA_SERVERS = [534598374985302027n, 905898879785005106n];

@@ -19,17 +19,17 @@ const upvoteCache = new Map<string, Date>();
  */
 export enum UpvoteAttempt {
   /** Successfully upvoted the target */
-  Success,
+  Success = 0,
   /** The guild has upvotes disabled globally. */
-  DisabledGuild,
+  DisabledGuild = 1,
   /** Attempted to upvote a bot. */
-  TargetBot,
+  TargetBot = 2,
   /** Attempted to upvote self. */
-  TargetSelf,
+  TargetSelf = 3,
   /** The target has a noXP role that prohibits adding XP. */
-  TargetHasNoXP,
+  TargetHasNoXP = 4,
   /** The user has voted recently. */
-  TimeoutNotElapsed,
+  TimeoutNotElapsed = 5,
 }
 
 type UpvoteAttemptResult =
@@ -107,8 +107,8 @@ export async function attemptUpvote(
   const userModel = await getUserModel(voter.user);
   const myUser = await userModel.fetch();
   const multiplier = getRawVoteMultiplier(
-    parseInt(myUser.lastTopggUpvoteDate),
-    parseInt(myUser.patreonTierUntilDate),
+    Number.parseInt(myUser.lastTopggUpvoteDate),
+    Number.parseInt(myUser.patreonTierUntilDate),
     myUser.patreonTier,
   );
 

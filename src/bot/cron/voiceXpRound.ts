@@ -95,7 +95,7 @@ function existMultipleMembers(members: Collection<string, GuildMember>) {
   if (members.size < 2) return false;
 
   let activeMembers = 0;
-  for (let member of members.values()) {
+  for (const member of members.values()) {
     if (!member.user.bot) activeMembers++;
     if (activeMembers >= 2) return true;
   }

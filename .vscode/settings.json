@@ -13,10 +13,9 @@
       "url": "./config/config.schema.json"
     }
   ],
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  }
 }

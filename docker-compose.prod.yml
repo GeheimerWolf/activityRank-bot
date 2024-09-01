@@ -18,6 +18,8 @@ services:
       target: production
     container_name: ActivityRank-Bot
     command: node dist/app.js
+    ports:
+      - '3000:3000'
     configs:
       - privileges
       - conf

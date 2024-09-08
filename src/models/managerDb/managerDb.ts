@@ -53,12 +53,12 @@ export async function managerFetch<T extends any>(route: string, init: RequestIn
     const url = new URL(`http://${keys.managerHost}${port}/${route}`);
 
     const headers = new Headers(init.headers);
-    headers.set('Authorization', keys.managerApiAuth);
+    headers.set('Authorization', `Bearer ${keys.managerApiAuth}`);
 
     const res = await fetch(url, { ...init, headers });
     return (await res.json()) as T;
   } catch (cause) {
-    throw new Error('Failed to fetch data from Manager API', { cause });
+    throw new Error(`Failed to fetch data at ${route} from Manager API`, { cause });
   }
 }
 
@@ -69,7 +69,7 @@ export async function mgrFetch<T extends any>(body: any, route: string, method: 
       method: method,
       headers: {
         'Content-Type': 'application/json',
-        authorization: keys.managerApiAuth,
+        authorization: `Bearer ${keys.managerApiAuth}`,
       },
     };
 
@@ -82,7 +82,7 @@ export async function mgrFetch<T extends any>(body: any, route: string, method: 
 
     return (await res.json()) as T;
   } catch (cause) {
-    throw new Error('Failed to fetch data from Manager API', { cause });
+    throw new Error(`Failed to fetch data at ${route} from Manager API`, { cause });
   }
 }
 

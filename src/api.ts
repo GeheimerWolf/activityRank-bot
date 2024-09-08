@@ -27,10 +27,6 @@ export function buildApiRouter(manager: ShardingManager): Hono {
   // Requires a JSON array of (string) snowflakes as the body.
   app.post(
     '/guild-ids/matching',
-    async (q, nxt) => {
-      console.log(q.req.queries());
-      await nxt();
-    },
     zValidator('json', z.array(z.string().regex(/\d{17,20}/))),
     async (c) => {
       const match = c.req.valid('json');

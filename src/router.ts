@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import {buildApiRouter} from './api.js';
+import { buildApiRouter } from './api.js';
 import type { ShardingManager } from 'discord.js';
 
 const router = new Hono();
